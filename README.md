@@ -126,9 +126,6 @@ EOF
 # edit hosts
 127.0.0.1 kubernetes-dashboard.k3s.cluster.local
 
-# port forward
-kubectl -n kube-system port-forward svc/traefik 8443:443
-
 # get token
 TOKEN=$(kubectl get secret admin-user-token -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 --decode)
 echo $TOKEN
