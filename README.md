@@ -2,7 +2,7 @@
 
 Rust chess bot HTTP API
 
-## How to deploy
+## How to deploy VM
 
 ```shell
 # dependencies
@@ -14,10 +14,101 @@ export KUBECONFIG="/Users/brandon/.lima/k3s/copied-from-guest/kubeconfig.yaml"
 
 # trust
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /Users/brandon/.lima/k3s/copied-from-guest/server-ca.crt
+```
 
-# cert manager
+## How to deploy Prometheus
+
+```shell
+# prometheus
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts --force-update
+helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+  --namespace monitoring \
+  --create-namespace
+
+# service monitor
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: traefik-metrics-service
+  labels:
+    app: traefik-metrics
+  namespace: kube-system
+spec:
+  selector:
+    app.kubernetes.io/name: traefik
+  ports:
+  - name: metrics
+    port: 9100
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: traefik
+    release: kube-prometheus-stack
+  name: traefik
+  namespace: monitoring
+spec:
+  endpoints:
+  - port: metrics
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - kube-system
+  selector:
+    matchLabels:
+      app: traefik-metrics
+EOF
+
+# ingress + certificate
+kubectl apply -f - <<EOF
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-tls
+  namespace: monitoring
+spec:
+  dnsNames:
+    - grafana.k3s.cluster.local
+  secretName: grafana-tls
+  issuerRef:
+    name: k3s-server-ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ingress-route
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: grafana-tls
+  routes:
+    - kind: Rule
+      match: Host("grafana.k3s.cluster.local")
+      services:
+        - kind: Service
+          port: 80
+          name: kube-prometheus-stack-grafana
+          namespace: monitoring
+EOF
+
+# edit hosts
+127.0.0.1 grafana.k3s.cluster.local
+
+# open (user: admin, password: prom-operator)
+open https://grafana.k3s.cluster.local
+```
+
+## How to deploy cert-manager
+
+```shell
+# cert-manager
 helm repo add jetstack https://charts.jetstack.io --force-update
-helm install \
+helm upgrade --install \
   cert-manager jetstack/cert-manager \
   --namespace cert-manager \
   --create-namespace \
@@ -39,11 +130,15 @@ spec:
   ca:
     secretName: k3s-server-ca-secret
 EOF
+```
 
+## How to deploy Kubernetes Dashboard
+
+```shell
 # kubernetes dashboard
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/ --force-update
-helm upgrade \
-  --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
+helm upgrade --install \
+  kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard \
   --namespace kubernetes-dashboard \
   --create-namespace
 
