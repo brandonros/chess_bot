@@ -41,8 +41,11 @@ portForwards:
 - guestPort: 443
   hostIP: "0.0.0.0" # overrides the default value "127.0.0.1"; allows privileged port forwarding
 
-# Mounts are disabled in this template, but can be enabled optionally.
-mounts: []
+# mounts
+mounts:
+- location: "/Users/brandon/Desktop/rust/chess_bot"
+  mountPoint: "/mnt/chess_bot"
+  writable: true
 
 # containerd is managed by k3s, not by Lima, so the values are set to false here.
 containerd:

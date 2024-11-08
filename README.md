@@ -29,15 +29,30 @@ helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheu
 kubectl apply -f assets/traefik-service-monitor.yaml
 
 # traefik deployment tweaks
-```yaml
-- --metrics.prometheus=true
-- --metrics.prometheus.entrypoint=metrics
-- --metrics.prometheus.addEntryPointsLabels=true
-- --metrics.prometheus.addRoutersLabels=true
-- --metrics.prometheus.addServicesLabels=true
-- --metrics.prometheus.headerlabels.xrequestpath=X-Replaced-Path
-- --metrics.prometheus.headerlabels.xforwardedhost=X-Forwarded-Host
-```
+kubectl patch deployment traefik \
+  -n kube-system \
+  --type='json' \
+  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": [
+    "--global.checknewversion",
+    "--global.sendanonymoususage",
+    "--entrypoints.metrics.address=:9100/tcp",
+    "--entrypoints.traefik.address=:9000/tcp",
+    "--entrypoints.web.address=:8000/tcp",
+    "--entrypoints.websecure.address=:8443/tcp",
+    "--api.dashboard=true",
+    "--ping=true",
+    "--metrics.prometheus=true",
+    "--metrics.prometheus.entrypoint=metrics",
+    "--metrics.prometheus.addEntryPointsLabels=true",
+    "--metrics.prometheus.addRoutersLabels=true",
+    "--metrics.prometheus.addServicesLabels=true",
+    "--metrics.prometheus.headerlabels.xrequestpath=X-Replaced-Path",
+    "--metrics.prometheus.headerlabels.xforwardedhost=X-Forwarded-Host",
+    "--providers.kubernetescrd",
+    "--providers.kubernetesingress",
+    "--providers.kubernetesingress.ingressendpoint.publishedservice=kube-system/traefik",
+    "--entrypoints.websecure.http.tls=true"
+  ]}]'
 
 # certificate + service + middleware + ingress route
 kubectl apply -f assets/grafana-ingress.yaml
@@ -95,4 +110,26 @@ echo $TOKEN
 
 # open
 open https://kubernetes-dashboard.k3s.cluster.local
+```
+
+## How to deploy Docker registry
+
+```shell
+helm repo add twuni https://helm.twun.io --force-update
+helm upgrade --install \
+  docker-registry twuni/docker-registry \
+  --namespace docker-registry \
+  --create-namespace
+
+# ingress
+kubectl apply -f assets/docker-registry-ingress.yaml
+
+# edit hosts
+127.0.0.1 docker-registry.k3s.cluster.local
+```
+
+## How to build chess_bot
+
+```shell
+TIMESTAMP=$(date +%s) envsubst < assets/kaniko-build.yaml | kubectl apply -f -
 ```
