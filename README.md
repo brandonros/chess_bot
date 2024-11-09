@@ -40,7 +40,7 @@ echo "127.0.0.1 chess-bot.node.external" | sudo tee -a /etc/hosts
 # get best move
 curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.node.external/chess/best-move -d '{
   "engine": "rustic",
-  "depth": 7,
+  "depth": 10,
   "fen": "rnbqkbnr/pp1pppp1/8/2p4p/4P3/2P5/PP1P1PPP/RNBQKBNR w KQkq h6 0 3"
 }'
 ```

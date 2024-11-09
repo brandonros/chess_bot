@@ -2,6 +2,12 @@
 
 set -e
 
+# metrics-server
+echo "deploying metrics-server"
+kubectl apply -f ./deploy/k8s/charts/metrics-server.yaml
+kubectl wait --for=create --timeout=90s deployment/metrics-server -n kube-system
+kubectl rollout status deployment/metrics-server -n kube-system --timeout=90s --watch
+
 # traefik
 echo "deploying traefik"
 kubectl apply -f ./deploy/k8s/charts/traefik.yaml
