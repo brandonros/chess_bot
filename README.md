@@ -1,6 +1,6 @@
 # chess_bot
 
-Rust chess bot HTTP API
+Rust chess bot via HTTP API + infrastructure exercise
 
 ## How to deploy VM
 
