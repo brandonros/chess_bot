@@ -5,13 +5,14 @@ Rust chess bot via HTTP API + infrastructure exercise
 ## Technologies used
 
 - Rust (smol, env_logger, http, miniserde)
-- Apple Virtualization framework (macOS VM)
-- Kubernetes (k3s)
+- Lima (Apple Virtualization framework, Ubuntu GNU/Linux VM)
+- K3s (Kubernetes cluster, workload orchestration)
 - Traefik (ingress, SSL)
 - Helm (charts/hull)
-- Prometheus, Grafana
-- cert-manager, kubernetes-dashboard, docker-registry
-- Kaniko (build)
+- Prometheus, Grafana (metrics, dashboards)
+- cert-manager (certificates)
+- docker-registry (container images)
+- Kaniko (container builds)
 
 ## How to deploy VM
 
