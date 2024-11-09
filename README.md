@@ -2,7 +2,18 @@
 
 Rust chess bot via HTTP API + infrastructure exercise
 
-## How to Ubuntu GNU/Linux VM running k3s cluster
+## Technologies used
+
+- Rust (smol, env_logger, http, miniserde)
+- Apple Virtualization framework (macOS VM)
+- Kubernetes (k3s)
+- Traefik (ingress, SSL)
+- Helm (charts/hull)
+- Prometheus, Grafana
+- cert-manager, kubernetes-dashboard, docker-registry
+- Kaniko (build)
+
+## How to deploy VM
 
 ```shell
 # dependencies
@@ -159,4 +170,11 @@ kubectl apply -f assets/chess-bot-ingress.yaml
 
 # open
 open https://chess-bot.k3s.cluster.local
+
+# get best move
+curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.k3s.cluster.local/chess/best-move -d '{
+  "engine": "rustic",
+  "depth": 6,
+  "fen": "rnbqkbnr/pp1pppp1/8/2p4p/4P3/2P5/PP1P1PPP/RNBQKBNR w KQkq h6 0 3"
+}'
 ```

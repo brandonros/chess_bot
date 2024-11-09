@@ -53,7 +53,7 @@ pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestM
                 move_generator,
                 transposition_table
             );
-            // get best move
+            // start search
             search.send(SearchControl::Start(SearchParams {
                 depth: request.depth as i8,
                 game_time: GameTime::new(0, 0, 0, 0, None),
@@ -62,20 +62,42 @@ pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestM
                 search_mode: SearchMode::Depth,
                 verbosity: Verbosity::Full,
             }));
-            let info = info_rx.recv().expect("failed to get best move");
-            let search_report = match info {
-                Information::Search(search_report) => search_report,
-                _ => return Err(box_err!("expected search report"))
+            // wait for best move
+            let best_move = loop {
+                let info = info_rx.recv().expect("failed to receive info");
+                let search_report = match info {
+                    Information::Search(search_report) => search_report,
+                    _ => return Err(box_err!("expected search report"))
+                };
+                match search_report {
+                    SearchReport::Finished(best_move) => {
+                        log::info!("search finished");
+                        break best_move
+                    },
+                    SearchReport::SearchSummary(_search_summary) => {
+                        log::info!("search summary");
+                    }
+                    SearchReport::SearchCurrentMove(_search_current_move) => {
+                        log::info!("search current move");
+                    }
+                    SearchReport::SearchStats(_search_stats) => {
+                        log::info!("search stats");
+                    }
+                    SearchReport::Ready => {
+                        log::info!("search ready");
+                    }
+                }
             };
-            let best_move = match search_report {
-                SearchReport::Finished(best_move) => best_move,
-                _ => return Err(box_err!("expected finished search report"))
-            };
+            // format best move
             let best_move = format!("{best_move}");
-            search.send(SearchControl::Stop);
-            search.shutdown();
+
+            // TODO: stop + cleanup
+            /*search.send(SearchControl::Stop);
+            search.shutdown(); // TODO: blocks?
             drop(search);
-            drop(info_rx);
+            drop(info_rx);*/
+
+            // return
             best_move
         },
         _ => return Err(box_err!("invalid engine type"))

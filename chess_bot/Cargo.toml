@@ -17,9 +17,10 @@ http_server = { git = "https://github.com/brandonros/http_server.git", rev = "79
 http = "1.1.0"
 # chess
 pleco = "0.5.0"
-rustic = { git = "https://github.com/mvanthoor/rustic.git", rev = "1053aa794e96c8f1491bf5e0ed3bd7b921260e06" }
+rustic = { git = "https://github.com/brandonros/rustic.git", rev = "1053aa794e96c8f1491bf5e0ed3bd7b921260e06" }
 # json
 miniserde = "0.1.40"
+# rustic peer dependency
 crossbeam-channel = "0.5.13"
 
 [profile.release]
