@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -e
 
 # dependencies
 helm repo add jetstack https://charts.jetstack.io --force-update

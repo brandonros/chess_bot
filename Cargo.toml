@@ -15,11 +15,11 @@ simple_error = { git = "https://github.com/brandonros/simple_error.git" }
 http_server = { git = "https://github.com/brandonros/http_server.git", rev = "7917abf069d98c3326ee95fca2ba242cdc2e7ca3" }
 # http + url
 http = "1.1.0"
+# json
+miniserde = "0.1.40"
 # chess
 pleco = "0.5.0"
 rustic = { git = "https://github.com/brandonros/rustic.git", rev = "1053aa794e96c8f1491bf5e0ed3bd7b921260e06" }
-# json
-miniserde = "0.1.40"
 # rustic peer dependency
 crossbeam-channel = "0.5.13"
 

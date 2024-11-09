@@ -4,15 +4,14 @@ Rust chess bot via HTTP API + infrastructure exercise
 
 ## Technologies used
 
-- Rust (smol, env_logger, http, miniserde)
 - Lima (Apple Virtualization framework, Ubuntu GNU/Linux VM)
 - K3s (Kubernetes cluster, workload orchestration)
 - Traefik (ingress, SSL, load balancing, routing)
-- Helm (package manager / YAML templating engine for Kubernetes)
-- Prometheus, Grafana (metrics, dashboards, monitoring)
-- cert-manager (automatedcertificates)
-- docker-registry (container images)
-- Kaniko (container builds)
+- cert-manager (automated certificate management)
+- docker-registry (stores and serves container images)
+- Kaniko (builds container images)
+- Helm (deployment package manager / YAML templating engine)
+- Rust (JSON HTTP server)
 
 ## How to deploy VM
 
@@ -42,7 +41,7 @@ sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keyc
 # get best move
 curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.k3s.cluster.local/chess/best-move -d '{
   "engine": "rustic",
-  "depth": 6,
+  "depth": 7,
   "fen": "rnbqkbnr/pp1pppp1/8/2p4p/4P3/2P5/PP1P1PPP/RNBQKBNR w KQkq h6 0 3"
 }'
 ```

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -x
+set -e
 
 # build chess-bot
 export TIMESTAMP=$(date +%s)
@@ -13,7 +13,7 @@ helm dependency build ./deploy/helm
 helm upgrade --install chess-bot ./deploy/helm \
   --namespace chess-bot \
   --create-namespace
-kubectl apply -f ./deploy/k8s/chess-bot-ingress.yaml # TODO: get this done via helm?
+kubectl apply -f ./deploy/k8s/ingress/chess-bot-ingress.yaml # TODO: get this done via helm?
 
 # restart deployment to ensure new image is used
 kubectl rollout restart -n chess-bot deployment chess-bot
