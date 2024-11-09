@@ -4,3 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+# async runtime
+smol = { git = "https://github.com/brandonros/smol.git", rev = "e593cac01d2ee4a1241b8c292f61b8a6d800bb08" }
+# logging
+env_logger = "0.11.5"
+log = "0.4.22"
+# error handling
+simple_error = { git = "https://github.com/brandonros/simple_error.git" }
+# http server
+http_server = { git = "https://github.com/brandonros/http_server.git", rev = "7917abf069d98c3326ee95fca2ba242cdc2e7ca3" }
+# http
+http = "1.1.0"

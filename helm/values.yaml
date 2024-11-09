@@ -1,18 +1,31 @@
 hull:
   config:
-    specific:
-      debug: true
-      application_version: v23.1
+    general:
+      rbac: false
+      noObjectNamePrefixes: true
   objects:
+    serviceaccount:
+      default:
+        enabled: false
     deployment:
       chess-bot:
-        enabled: true
         pod:
           containers:
             main:
               image:
                 repository: docker-registry:5000/chess-bot
                 tag: latest
+              env:
+                RUST_LOG:
+                  value: debug
               ports:
                 http:
                   containerPort: 8080
+    service:
+      chess-bot:
+        type: ClusterIP
+        ports:
+          http:
+            port: 8080
+            targetPort: 8080
+

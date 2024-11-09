@@ -132,6 +132,8 @@ kubectl apply -f assets/docker-registry-ingress.yaml
 
 ```shell
 TIMESTAMP=$(date +%s) envsubst < assets/kaniko-build.yaml | kubectl apply -f -
+kubectl wait --for=condition=complete --timeout=300s job/chess-bot-build-${TIMESTAMP} -n chess-bot
+
 ```
 
 ## How to deploy chess_bot
@@ -140,7 +142,14 @@ TIMESTAMP=$(date +%s) envsubst < assets/kaniko-build.yaml | kubectl apply -f -
 helm repo add hull https://vidispine.github.io/hull
 helm dependency update ./helm
 helm dependency build ./helm
+helm uninstall chess-bot -n chess-bot
 helm upgrade --install chess-bot ./helm \
   --namespace chess-bot \
   --create-namespace
+
+# ingress
+kubectl apply -f assets/chess-bot-ingress.yaml
+
+# edit hosts
+127.0.0.1 chess-bot.k3s.cluster.local
 ```

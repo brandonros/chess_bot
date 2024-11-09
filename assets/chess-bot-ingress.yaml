@@ -1,0 +1,53 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: chess-bot-tls
+  namespace: chess-bot
+spec:
+  dnsNames:
+    - chess-bot.k3s.cluster.local
+  secretName: chess-bot-tls
+  issuerRef:
+    name: k3s-server-ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: TraefikService
+metadata:
+  name: chess-bot-service
+  namespace: chess-bot
+spec:
+  weighted:
+    services:
+      - name: chess-bot
+        port: 8080
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: capture-original-path
+  namespace: chess-bot
+spec:
+  replacePathRegex:
+    regex: "^/(.*)"
+    replacement: "/$1"
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: chess-bot-ingress-route
+  namespace: chess-bot
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: chess-bot-tls
+  routes:
+    - kind: Rule
+      match: Host("chess-bot.k3s.cluster.local")
+      middlewares:
+        - name: capture-original-path
+          namespace: chess-bot
+      services:
+        - name: chess-bot-service
+          kind: TraefikService
