@@ -12,27 +12,6 @@ spec:
     kind: ClusterIssuer
 ---
 apiVersion: traefik.containo.us/v1alpha1
-kind: TraefikService
-metadata:
-  name: chess-bot-service
-  namespace: chess-bot
-spec:
-  weighted:
-    services:
-      - name: chess-bot
-        port: 8080
----
-apiVersion: traefik.containo.us/v1alpha1
-kind: Middleware
-metadata:
-  name: capture-original-path
-  namespace: chess-bot
-spec:
-  replacePathRegex:
-    regex: "^/(.*)"
-    replacement: "/$1"
----
-apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
   name: chess-bot-ingress-route
@@ -45,9 +24,7 @@ spec:
   routes:
     - kind: Rule
       match: Host("chess-bot.k3s.cluster.local")
-      middlewares:
-        - name: capture-original-path
-          namespace: chess-bot
       services:
-        - name: chess-bot-service
-          kind: TraefikService
+        - kind: Service
+          port: 8080
+          name: chess-bot
