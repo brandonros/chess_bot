@@ -14,9 +14,11 @@ helm upgrade --install \
   --create-namespace \
   --version v1.16.1 \
   --set crds.enabled=true
-kubectl create secret tls -n cert-manager k3s-server-ca-secret \
+kubectl create secret tls \
+  --namespace cert-manager \
+  k3s-server-ca-secret \
   --cert=/Users/brandon/.lima/k3s/copied-from-guest/server-ca.crt \
-  --key=/Users/brandon/.lima/k3s/copied-from-guest/server-ca.key
+  --key=/Users/brandon/.lima/k3s/copied-from-guest/server-ca.key || true
 kubectl apply -f ./deploy/k8s/certs/cluster-issuer.yaml
 
 # docker-registry

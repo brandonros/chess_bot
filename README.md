@@ -13,7 +13,7 @@ Rust chess bot via HTTP API + infrastructure exercise
 - Helm (deployment package manager / YAML templating engine)
 - Rust (JSON HTTP server)
 
-## How to deploy VM
+## How to use
 
 ```shell
 # dependencies
@@ -25,17 +25,16 @@ limactl start ./assets/ubuntu-k3s-vm.yaml
 # configure kubectl
 export KUBECONFIG="/Users/brandon/.lima/k3s/copied-from-guest/kubeconfig.yaml"
 
-# trust CA
+# trust k3s-generated CA
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /Users/brandon/.lima/k3s/copied-from-guest/server-ca.crt
-```
 
-## How to deploy chess-bot
-
-```shell
+# setup infrastructure
 ./scripts/setup.sh
+
+# deploy application
 ./scripts/deploy.sh
 
-# edit /etc/hosts
+# add ingress tunneled over cluster to /etc/hosts
 127.0.0.1 chess-bot.k3s.cluster.local
 
 # get best move
