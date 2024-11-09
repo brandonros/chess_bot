@@ -19,26 +19,26 @@ Rust JSON HTTP API over chess move scoring engine
 # dependencies
 brew install kubectl lima helm
 
-# provision VM
-limactl start --name debian-k3s ./deploy/vm/debian-k3s.yaml
-
 # configure kubectl
 export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.yaml"
 
-# trust k3s-generated CA
-sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /Users/brandon/.lima/debian-k3s/copied-from-guest/server-ca.crt
+# create VM
+./scripts/create-vm.sh
 
 # setup infrastructure
-./scripts/setup.sh
+./scripts/setup-infrastructure.sh
+
+# build application
+./scripts/build.sh
 
 # deploy application
 ./scripts/deploy.sh
 
 # add ingress tunneled over cluster to /etc/hosts
-127.0.0.1 chess-bot.k3s.cluster.local
+echo "127.0.0.1 chess-bot.node.external" | sudo tee -a /etc/hosts
 
 # get best move
-curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.k3s.cluster.local/chess/best-move -d '{
+curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.node.external/chess/best-move -d '{
   "engine": "rustic",
   "depth": 7,
   "fen": "rnbqkbnr/pp1pppp1/8/2p4p/4P3/2P5/PP1P1PPP/RNBQKBNR w KQkq h6 0 3"

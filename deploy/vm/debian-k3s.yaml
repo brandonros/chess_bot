@@ -22,9 +22,15 @@ disk: "100GiB"
 # port forwards
 portForwards:
 - guestPort: 6443
-  hostIP: "0.0.0.0"
+  hostPort: 6443
+  guestIP: "127.0.0.1"
+  hostIP: "127.0.0.1"
+  proto: tcp
 - guestPort: 443
-  hostIP: "0.0.0.0"
+  hostPort: 443
+  guestIP: "127.0.0.1"
+  hostIP: "127.0.0.1"
+  proto: tcp
 
 # mounts
 mounts:
@@ -44,6 +50,14 @@ provision:
     #!/bin/sh
     if [ ! -d /var/lib/rancher/k3s ]; then
       curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --write-kubeconfig-mode 644 --disable=traefik --disable=metrics-server" sh -
+
+      # trust cluster ssl
+      cp /var/lib/rancher/k3s/server/tls/server-ca.crt /usr/local/share/ca-certificates/
+      update-ca-certificates
+
+      # add coredns in the cluster to node dns resolution chain
+      echo "DNS=10.43.0.10" | tee -a /etc/systemd/resolved.conf
+      systemctl restart systemd-resolved
     fi
 
 # probes

@@ -12,7 +12,7 @@ spec:
   repo: https://raw.githubusercontent.com/brandonros/hull-wrapper/master/
   chart: hull-wrapper
   targetNamespace: chess-bot
-  version: 0.1.0
+  version: 0.2.0
   valuesContent: |-
     hull:
       config:
@@ -29,7 +29,7 @@ spec:
               containers:
                 main:
                   image:
-                    repository: docker-registry:5000/chess-bot
+                    repository: docker-registry.node.external/chess-bot
                     tag: latest
                   env:
                     RUST_LOG:

@@ -1,12 +1,9 @@
+#!/bin/bash
 
-# deploy chess-bot
-helm dependency update ./deploy/helm
-helm dependency build ./deploy/helm
-helm upgrade --install chess-bot ./deploy/helm \
-  --namespace chess-bot \
-  --create-namespace
-kubectl apply -f ./deploy/k8s/ingress/chess-bot-ingress.yaml # TODO: get this done via helm?
+set -e
 
-# restart deployment to ensure new image is used
-kubectl rollout restart -n chess-bot deployment chess-bot
-kubectl rollout status -n chess-bot deployment chess-bot --watch
+# deploy
+kubectl apply -f ./deploy/k8s/charts/chess-bot.yaml
+kubectl wait --for=create --timeout=90s deployment/chess-bot -n chess-bot
+kubectl rollout status deployment/chess-bot -n chess-bot --timeout=90s --watch
+kubectl apply -f ./deploy/k8s/ingress/chess-bot-ingress.yaml
