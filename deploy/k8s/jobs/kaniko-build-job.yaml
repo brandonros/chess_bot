@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: chess-bot-kaniko-build-${TIMESTAMP}
+  name: kaniko-build-${TIMESTAMP}
   namespace: cicd
 spec:
   backoffLimit: 0
@@ -14,12 +14,12 @@ spec:
         args:
           - "--dockerfile=Dockerfile"
           - "--context=/workspace"
-          - "--destination=docker-registry.docker-registry.svc.cluster.local:5000/chess-bot:latest"
+          - "--destination=${IMAGE_DESTINATION}"
         volumeMounts:
-          - name: chess-bot
+          - name: local-path-volume
             mountPath: /workspace
       restartPolicy: Never
       volumes:
-        - name: chess-bot
+        - name: local-path-volume
           persistentVolumeClaim:
-            claimName: chess-bot-kaniko-pvc
+            claimName: local-path-pvc

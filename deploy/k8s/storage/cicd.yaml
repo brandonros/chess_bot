@@ -6,10 +6,10 @@ metadata:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: chess-bot-kaniko-pv
+  name: local-path-pv
   labels:
     type: local
-    app: chess-bot
+    app: kaniko
 spec:
   storageClassName: local-path
   capacity:
@@ -17,18 +17,18 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: /mnt/chess_bot
+    path: ${HOST_PATH}
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: chess-bot-kaniko-pvc
+  name: local-path-pvc
   namespace: cicd
 spec:
   selector:
     matchLabels:
       type: local
-      app: chess-bot
+      app: kaniko
   accessModes:
     - ReadWriteOnce
   resources:
