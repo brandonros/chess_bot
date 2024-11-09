@@ -2,7 +2,7 @@
 
 Rust chess bot via HTTP API + infrastructure exercise
 
-## How to deploy VM
+## How to Ubuntu GNU/Linux VM running k3s cluster
 
 ```shell
 # dependencies
@@ -32,27 +32,33 @@ kubectl apply -f assets/traefik-service-monitor.yaml
 kubectl patch deployment traefik \
   -n kube-system \
   --type='json' \
-  -p='[{"op": "replace", "path": "/spec/template/spec/containers/0/args", "value": [
-    "--global.checknewversion",
-    "--global.sendanonymoususage",
-    "--entrypoints.metrics.address=:9100/tcp",
-    "--entrypoints.traefik.address=:9000/tcp",
-    "--entrypoints.web.address=:8000/tcp",
-    "--entrypoints.websecure.address=:8443/tcp",
-    "--api.dashboard=true",
-    "--ping=true",
-    "--metrics.prometheus=true",
-    "--metrics.prometheus.entrypoint=metrics",
-    "--metrics.prometheus.addEntryPointsLabels=true",
-    "--metrics.prometheus.addRoutersLabels=true",
-    "--metrics.prometheus.addServicesLabels=true",
-    "--metrics.prometheus.headerlabels.xrequestpath=X-Replaced-Path",
-    "--metrics.prometheus.headerlabels.xforwardedhost=X-Forwarded-Host",
-    "--providers.kubernetescrd",
-    "--providers.kubernetesingress",
-    "--providers.kubernetesingress.ingressendpoint.publishedservice=kube-system/traefik",
-    "--entrypoints.websecure.http.tls=true"
-  ]}]'
+  -p='[
+    {
+        "op": "replace",
+        "path": "/spec/template/spec/containers/0/args",
+        "value": [
+            "--global.checknewversion",
+            "--global.sendanonymoususage",
+            "--entrypoints.metrics.address=:9100/tcp",
+            "--entrypoints.traefik.address=:9000/tcp",
+            "--entrypoints.web.address=:8000/tcp",
+            "--entrypoints.websecure.address=:8443/tcp",
+            "--api.dashboard=true",
+            "--ping=true",
+            "--metrics.prometheus=true",
+            "--metrics.prometheus.entrypoint=metrics",
+            "--metrics.prometheus.addEntryPointsLabels=true",
+            "--metrics.prometheus.addRoutersLabels=true",
+            "--metrics.prometheus.addServicesLabels=true",
+            "--metrics.prometheus.headerlabels.xrequestpath=X-Replaced-Path",
+            "--metrics.prometheus.headerlabels.xforwardedhost=X-Forwarded-Host",
+            "--providers.kubernetescrd",
+            "--providers.kubernetesingress",
+            "--providers.kubernetesingress.ingressendpoint.publishedservice=kube-system/traefik",
+            "--entrypoints.websecure.http.tls=true"
+        ]
+    }
+]'
 
 # certificate + service + middleware + ingress route
 kubectl apply -f assets/grafana-ingress.yaml
@@ -150,4 +156,7 @@ kubectl apply -f assets/chess-bot-ingress.yaml
 
 # edit hosts
 127.0.0.1 chess-bot.k3s.cluster.local
+
+# open
+open https://chess-bot.k3s.cluster.local
 ```
