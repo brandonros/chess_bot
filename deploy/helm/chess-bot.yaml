@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: chess-bot
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: chess-bot
+  namespace: chess-bot
+spec:
+  repo: https://raw.githubusercontent.com/brandonros/hull-wrapper/master/
+  chart: hull-wrapper
+  targetNamespace: chess-bot
+  version: 0.1.0
+  valuesContent: |-
+    hull:
+      config:
+        general:
+          rbac: false
+          noObjectNamePrefixes: true
+      objects:
+        serviceaccount:
+          default:
+            enabled: false
+        deployment:
+          chess-bot:
+            pod:
+              containers:
+                main:
+                  image:
+                    repository: docker-registry:5000/chess-bot
+                    tag: latest
+                  env:
+                    RUST_LOG:
+                      value: debug
+                  ports:
+                    http:
+                      containerPort: 8080
+        service:
+          chess-bot:
+            type: ClusterIP
+            ports:
+              http:
+                port: 8080
+                targetPort: 8080

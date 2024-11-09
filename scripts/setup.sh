@@ -2,30 +2,22 @@
 
 set -e
 
-# dependencies
-helm repo add jetstack https://charts.jetstack.io --force-update
-helm repo add twuni https://helm.twun.io --force-update
-helm repo add hull https://vidispine.github.io/hull --force-update
+# traefik
+kubectl apply -f ./deploy/helm/traefik.yaml
+kubectl rollout status deployment/traefik -n kube-system --timeout=90s --watch
 
 # cert-manager
-helm upgrade --install \
-  cert-manager jetstack/cert-manager \
-  --namespace cert-manager \
-  --create-namespace \
-  --version v1.16.1 \
-  --set crds.enabled=true
-kubectl create secret tls \
-  --namespace cert-manager \
-  k3s-server-ca-secret \
-  --cert=/Users/brandon/.lima/k3s/copied-from-guest/server-ca.crt \
-  --key=/Users/brandon/.lima/k3s/copied-from-guest/server-ca.key || true
-kubectl apply -f ./deploy/k8s/certs/cluster-issuer.yaml
+kubectl apply -f ./deploy/helm/cert-manager.yaml
+kubectl rollout status deployment/cert-manager -n cert-manager --timeout=90s --watch
+
+# cluster-issuer
+export BASE64_ENCODED_CERT_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | base64)
+export BASE64_ENCODED_KEY_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | base64)
+envsubst < ./deploy/helm/cluster-issuer.yaml | kubectl apply -f -
 
 # docker-registry
-helm upgrade --install \
-  docker-registry twuni/docker-registry \
-  --namespace docker-registry \
-  --create-namespace
+kubectl apply -f ./deploy/helm/docker-registry.yaml
+kubectl rollout status deployment/docker-registry -n docker-registry --timeout=90s --watch
 
-# storage
-kubectl apply -f ./deploy/k8s/storage/volumes.yaml
+# cicd
+kubectl apply -f ./deploy/helm/cicd.yaml

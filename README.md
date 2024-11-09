@@ -1,10 +1,10 @@
 # chess_bot
 
-Rust chess bot via HTTP API + infrastructure exercise
+Rust JSON HTTP API over chess move scoring engine
 
 ## Technologies used
 
-- Lima (Apple Virtualization framework, Ubuntu GNU/Linux VM)
+- Lima (Apple Virtualization framework, Ubuntu GNU/Linux virtual machine)
 - K3s (Kubernetes cluster, workload orchestration)
 - Traefik (ingress, SSL, load balancing, routing)
 - cert-manager (automated certificate management)
@@ -20,13 +20,13 @@ Rust chess bot via HTTP API + infrastructure exercise
 brew install kubectl lima helm
 
 # provision VM
-limactl start ./assets/ubuntu-k3s-vm.yaml
+limactl start --name debian-k3s ./deploy/vm/debian-k3s.yaml
 
 # configure kubectl
-export KUBECONFIG="/Users/brandon/.lima/k3s/copied-from-guest/kubeconfig.yaml"
+export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.yaml"
 
 # trust k3s-generated CA
-sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /Users/brandon/.lima/k3s/copied-from-guest/server-ca.crt
+sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /Users/brandon/.lima/debian-k3s/copied-from-guest/server-ca.crt
 
 # setup infrastructure
 ./scripts/setup.sh
