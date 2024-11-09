@@ -132,8 +132,6 @@ kubectl apply -f assets/docker-registry-ingress.yaml
 
 ```shell
 TIMESTAMP=$(date +%s) envsubst < assets/kaniko-build.yaml | kubectl apply -f -
-kubectl wait --for=condition=complete --timeout=300s job/chess-bot-build-${TIMESTAMP} -n chess-bot
-
 ```
 
 ## How to deploy chess_bot
