@@ -1,0 +1,18 @@
+hull:
+  config:
+    specific:
+      debug: true
+      application_version: v23.1
+  objects:
+    deployment:
+      chess-bot:
+        enabled: true
+        pod:
+          containers:
+            main:
+              image:
+                repository: docker-registry:5000/chess-bot
+                tag: latest
+              ports:
+                http:
+                  containerPort: 8080

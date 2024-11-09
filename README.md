@@ -133,3 +133,14 @@ kubectl apply -f assets/docker-registry-ingress.yaml
 ```shell
 TIMESTAMP=$(date +%s) envsubst < assets/kaniko-build.yaml | kubectl apply -f -
 ```
+
+## How to deploy chess_bot
+
+```shell
+helm repo add hull https://vidispine.github.io/hull
+helm dependency update ./helm
+helm dependency build ./helm
+helm upgrade --install chess-bot ./helm \
+  --namespace chess-bot \
+  --create-namespace
+```
