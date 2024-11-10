@@ -25,14 +25,14 @@ export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.
 # create VM
 ./scripts/create-vm.sh
 
-# setup infrastructure
-./scripts/setup-infrastructure.sh
+# deploy infrastructure
+./scripts/deploy-infrastructure.sh
 
 # build application
-./scripts/build.sh
+./scripts/build-application.sh
 
 # deploy application
-./scripts/deploy.sh
+./scripts/deploy-application.sh
 
 # add ingress tunneled over cluster to /etc/hosts
 echo "127.0.0.1 chess-bot.node.external" | sudo tee -a /etc/hosts

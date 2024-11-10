@@ -35,10 +35,10 @@ kubectl wait --for=create --timeout=90s deployment/docker-registry -n docker-reg
 kubectl rollout status deployment/docker-registry -n docker-registry --timeout=90s --watch
 kubectl apply -f ./deploy/k8s/ingress/docker-registry-ingress.yaml
 
-# cicd
-echo "deploying cicd"
+# storage
+echo "deploying storage"
 export HOST_PATH="/mnt/chess_bot"
-envsubst < ./deploy/k8s/storage/cicd.yaml | kubectl apply -f -
+envsubst < ./deploy/k8s/storage/local-path-pvc.yaml | kubectl apply -f -
 
 # dns
 echo "reconfiguring coredns"
