@@ -33,7 +33,7 @@ echo "deploying docker-registry"
 kubectl apply -f ./deploy/k8s/charts/docker-registry.yaml
 kubectl wait --for=create --timeout=90s deployment/docker-registry -n docker-registry
 kubectl rollout status deployment/docker-registry -n docker-registry --timeout=90s --watch
-kubectl apply -f ./deploy/k8s/ingress/docker-registry-ingress.yaml
+kubectl apply -f ./deploy/k8s/ingress/docker-registry-external-ingress.yaml
 
 # storage
 echo "deploying storage"
@@ -48,6 +48,12 @@ envsubst < deploy/k8s/dns/coredns-config.yaml | kubectl apply -f -
 # prometheus-stack
 echo "deploying prometheus-stack"
 kubectl apply -f ./deploy/k8s/charts/prometheus-stack.yaml
-kubectl wait --for=create --timeout=90s deployment/prometheus-stack -n monitoring
-kubectl rollout status deployment/prometheus-stack -n monitoring --timeout=90s --watch
-kubectl apply -f ./deploy/k8s/ingress/grafana-ingress.yaml
+kubectl wait --for=create --timeout=90s deployment/kube-prometheus-stack-grafana -n monitoring
+kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s --watch
+kubectl apply -f ./deploy/k8s/ingress/grafana-external-ingress.yaml
+
+# ngrok
+echo "deploying ngrok"
+envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
+kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
+kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch
