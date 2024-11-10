@@ -31,6 +31,11 @@ portForwards:
   guestIP: "127.0.0.1"
   hostIP: "127.0.0.1"
   proto: tcp
+- guestPort: 80
+  hostPort: 80
+  guestIP: "127.0.0.1"
+  hostIP: "127.0.0.1"
+  proto: tcp
 
 # mounts
 mounts:

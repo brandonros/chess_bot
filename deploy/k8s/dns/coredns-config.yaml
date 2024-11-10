@@ -32,3 +32,4 @@ data:
     ${TRAEFIK_IP} docker-registry.node.external
     ${TRAEFIK_IP} grafana.node.external
     ${TRAEFIK_IP} chess-bot.node.external
+    ${TRAEFIK_IP} tempo.node.external

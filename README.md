@@ -37,6 +37,7 @@ export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.
 # append exposed external services from ingress to /etc/hosts
 echo "127.0.0.1 chess-bot.node.external" | sudo tee -a /etc/hosts
 echo "127.0.0.1 grafana.node.external" | sudo tee -a /etc/hosts
+echo "127.0.0.1 tempo.node.external" | sudo tee -a /etc/hosts
 
 # get best move
 curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.node.external/chess/best-move -d '{

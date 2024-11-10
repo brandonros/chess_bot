@@ -32,17 +32,20 @@ spec:
           uid: alertmanager
           url: http://kube-prometheus-stack-alertmanager.monitoring:9093/
           access: proxy
+          isDefault: false
           jsonData:
             handleGrafanaManagedAlerts: false
             implementation: prometheus
         - name: Loki
           type: loki
           uid: loki
+          isDefault: false
           access: proxy
           url: http://loki-stack.monitoring:3100
         - name: Tempo
           type: tempo
           uid: tempo
+          isDefault: false
           access: proxy
           url: http://tempo.monitoring:3100
 

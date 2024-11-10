@@ -63,6 +63,7 @@ echo "deploying tempo"
 kubectl apply -f ./deploy/k8s/charts/tempo.yaml
 kubectl wait --for=create --timeout=90s statefulset/tempo -n monitoring
 kubectl rollout status statefulset/tempo -n monitoring --timeout=90s --watch
+kubectl apply -f ./deploy/k8s/ingress/tempo-external-ingress.yaml
 
 # ngrok
 echo "deploying ngrok"
