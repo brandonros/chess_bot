@@ -17,6 +17,7 @@ spec:
     hull:
       config:
         general:
+          nameOverride: chess-bot
           rbac: false
           noObjectNamePrefixes: true
       objects:

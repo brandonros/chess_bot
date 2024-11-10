@@ -40,4 +40,9 @@ spec:
           uid: loki
           access: proxy
           url: http://loki-stack.monitoring:3100
+        - name: Tempo
+          type: tempo
+          uid: tempo
+          access: proxy
+          url: http://tempo.monitoring:3100
 

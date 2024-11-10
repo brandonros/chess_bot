@@ -58,6 +58,12 @@ kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
 kubectl wait --for=create --timeout=90s statefulset/loki-stack -n monitoring
 kubectl rollout status statefulset/loki-stack -n monitoring --timeout=90s --watch
 
+# tempo
+echo "deploying tempo"
+kubectl apply -f ./deploy/k8s/charts/tempo.yaml
+kubectl wait --for=create --timeout=90s statefulset/tempo -n monitoring
+kubectl rollout status statefulset/tempo -n monitoring --timeout=90s --watch
+
 # ngrok
 echo "deploying ngrok"
 envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
