@@ -30,3 +30,5 @@ data:
   NodeHosts: |
     192.168.5.15 lima-debian-k3s
     ${TRAEFIK_IP} docker-registry.node.external
+    ${TRAEFIK_IP} grafana.node.external
+    ${TRAEFIK_IP} chess-bot.node.external

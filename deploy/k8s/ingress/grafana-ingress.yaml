@@ -1,0 +1,30 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana-tls
+  namespace: monitoring
+spec:
+  dnsNames:
+    - grafana.node.external
+  secretName: grafana-tls
+  issuerRef:
+    name: k3s-server-ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana-ingress-route
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  tls:
+    secretName: grafana-tls
+  routes:
+    - kind: Rule
+      match: Host("grafana.node.external")
+      services:
+        - kind: Service
+          port: 80
+          name: kube-prometheus-stack-grafana

@@ -44,3 +44,10 @@ envsubst < ./deploy/k8s/storage/local-path-pvc.yaml | kubectl apply -f -
 echo "reconfiguring coredns"
 export TRAEFIK_IP=$(kubectl -n kube-system get svc traefik -o jsonpath='{.spec.clusterIP}')
 envsubst < deploy/k8s/dns/coredns-config.yaml | kubectl apply -f -
+
+# prometheus-stack
+echo "deploying prometheus-stack"
+kubectl apply -f ./deploy/k8s/charts/prometheus-stack.yaml
+kubectl wait --for=create --timeout=90s deployment/prometheus-stack -n monitoring
+kubectl rollout status deployment/prometheus-stack -n monitoring --timeout=90s --watch
+kubectl apply -f ./deploy/k8s/ingress/grafana-ingress.yaml
