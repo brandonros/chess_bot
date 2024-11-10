@@ -49,6 +49,7 @@ provision:
   script: |
     #!/bin/sh
     if [ ! -d /var/lib/rancher/k3s ]; then
+      # install k3s
       curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server --write-kubeconfig-mode 644 --disable=traefik --disable=metrics-server" sh -
 
       # trust cluster ssl

@@ -16,10 +16,10 @@ spec:
           - "--context=/workspace"
           - "--destination=${IMAGE_DESTINATION}"
         volumeMounts:
-          - name: local-path-volume
+          - name: pvc-volume
             mountPath: /workspace
       restartPolicy: Never
       volumes:
-        - name: local-path-volume
+        - name: pvc-volume
           persistentVolumeClaim:
-            claimName: local-path-pvc
+            claimName: ${PVC_NAME}

@@ -56,15 +56,19 @@ pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestM
                 .fen_setup(Some(&request.fen))
                 .expect("failed to setup board from fen");
             let board = Arc::new(Mutex::new(board));
+
             // setup move generator
             let move_generator = Arc::new(MoveGenerator::new());
+
             // setup transposition table
             let tt_size = 32; // TODO: not sure
             let transposition_table = Arc::new(Mutex::new(TT::<SearchData>::new(tt_size)));
+
             // setup search
             let mut search = Search::new();
             let (info_tx, info_rx) = crossbeam_channel::unbounded::<Information>();
             search.init(info_tx, board, move_generator, transposition_table);
+
             // start search
             search.send(SearchControl::Start(SearchParams {
                 depth: request.depth as i8,
@@ -74,6 +78,7 @@ pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestM
                 search_mode: SearchMode::Depth,
                 verbosity: Verbosity::Full,
             }));
+
             // wait for best move
             let best_move = loop {
                 let info = info_rx.recv().expect("failed to receive info");
@@ -100,14 +105,13 @@ pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestM
                     }
                 }
             };
+
             // format best move
             let best_move = format!("{best_move}");
 
-            // TODO: stop + cleanup
-            /*search.send(SearchControl::Stop);
-            search.shutdown(); // TODO: blocks?
-            drop(search);
-            drop(info_rx);*/
+            // quit + cleanup
+            search.send(SearchControl::Quit);
+            search.shutdown();
 
             // return
             best_move
@@ -117,7 +121,7 @@ pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestM
 
     // build response
     let response_body = GetBestMoveResponse {
-        best_move: format!("{best_move}"),
+        best_move
     };
 
     // return
