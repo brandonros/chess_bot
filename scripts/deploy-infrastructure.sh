@@ -52,6 +52,12 @@ kubectl wait --for=create --timeout=90s deployment/kube-prometheus-stack-grafana
 kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s --watch
 kubectl apply -f ./deploy/k8s/ingress/grafana-external-ingress.yaml
 
+# loki-stack
+echo "deploying loki-stack"
+kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
+kubectl wait --for=create --timeout=90s statefulset/loki-stack -n monitoring
+kubectl rollout status statefulset/loki-stack -n monitoring --timeout=90s --watch
+
 # ngrok
 echo "deploying ngrok"
 envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
