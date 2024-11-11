@@ -6,16 +6,9 @@ edition = "2021"
 [dependencies]
 # async runtime
 smol = { git = "https://github.com/brandonros/smol.git", rev = "e593cac01d2ee4a1241b8c292f61b8a6d800bb08" }
-# logging / tracing /  metrics
+# logging
+env_logger = "0.11.5"
 log = "0.4.22"
-tracing-subscriber = "0.3.18"
-metrics = "0.24.0"
-tracing = "0.1.40"
-metrics-exporter-prometheus = "0.16.0"
-opentelemetry_sdk = "0.26.0"
-opentelemetry = "0.26.0"
-opentelemetry-otlp = { version = "0.26.0", features = ["http-json", "reqwest-blocking-client"] }
-tracing-opentelemetry = "0.27.0"
 # error handling
 simple_error = { git = "https://github.com/brandonros/simple_error.git" }
 # http server

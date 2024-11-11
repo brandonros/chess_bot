@@ -7,9 +7,6 @@ use smol::Executor;
 use crate::chess;
 use crate::structs::GetBestMoveRequest;
 
-use tracing::instrument;
-
-#[instrument]
 pub async fn get_ping(_executor: Arc<Executor<'static>>, request: Request<Vec<u8>>) -> SimpleResult<Response<String>> {
     // log
     log::info!("get_ping: {:?}", request);
@@ -25,7 +22,6 @@ pub async fn get_ping(_executor: Arc<Executor<'static>>, request: Request<Vec<u8
     Ok(response)
 }
 
-#[instrument]
 pub async fn get_best_move(_executor: Arc<Executor<'static>>, request: Request<Vec<u8>>) -> SimpleResult<Response<String>> {
     // log
     log::info!("get_best_move: {:?}", request);
