@@ -8,8 +8,36 @@ spec:
   chart: traefik
   targetNamespace: traefik
   createNamespace: true
-  version: 27.0.0
+  version: 33.0.0
   valuesContent: |-
-    deployment:
-      podAnnotations:
-        linkerd.io/inject: enabled # TODO: enabled or ingress?
+    logs:
+      general:
+        level: TRACE
+      access:
+        enabled: true
+    providers:
+      kubernetesIngress:
+        enabled: false
+      kubernetesGateway:
+        enabled: true
+        gateway:
+          namespacePolicy: All
+          listeners:
+            web:
+              port: 8000
+              protocol: HTTP
+              namespacePolicy: All
+              allowedRoutes:
+                namespaces:
+                  from: Same
+            websecure:
+              port: 8443
+              protocol: HTTPS
+              namespacePolicy: All
+              allowedRoutes:
+                namespaces:
+                  from: Same
+              certificateRefs:
+                - kind: Secret
+                  name: gateway-tls
+                  namespace: traefik

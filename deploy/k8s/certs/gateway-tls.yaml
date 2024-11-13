@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gateway-tls
+  namespace: traefik
+spec:
+  dnsNames:
+    - docker-registry.debian-k3s
+  secretName: gateway-tls
+  issuerRef:
+    name: k3s-server-ca-issuer
+    kind: ClusterIssuer
