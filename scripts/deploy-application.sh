@@ -13,3 +13,6 @@ kubectl apply -f ./deploy/k8s/ingress/chess-bot-external-ingress.yaml
 
 # deploy ngrok ingress
 envsubst < ./deploy/k8s/ingress/chess-bot-ngrok-ingress.yaml | kubectl apply -f -
+
+# deploy chess-bot route
+kubectl apply -f ./deploy/k8s/routes/chess-bot-route.yaml

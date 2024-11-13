@@ -19,7 +19,7 @@ async fn async_main(executor: Arc<Executor<'static>>) -> SimpleResult<()> {
     // build router
     let mut router = Router::new(executor.clone());
     router.add_route("GET", "/ping", Arc::new(move |executor, req| Box::pin(routes::get_ping(executor, req))));
-    router.add_route("POST", "/chess/best-move", Arc::new(move |executor, req| Box::pin(routes::get_best_move(executor, req))));
+    router.add_route("POST", "/move/best", Arc::new(move |executor, req| Box::pin(routes::get_best_move(executor, req))));
     let router = Arc::new(router);
 
     // run server

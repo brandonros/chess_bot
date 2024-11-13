@@ -1,3 +1,4 @@
+# this is needed because k3s pulls container images from the docker registry outside of the cluster and k3s by default requires registries server over https://
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:

@@ -1,14 +1,10 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: monitoring
----
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: tempo
-  namespace: monitoring
+  namespace: kube-system
 spec:
   repo: https://grafana.github.io/helm-charts
   chart: tempo
   targetNamespace: monitoring
+  createNamespace: true
