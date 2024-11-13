@@ -10,6 +10,9 @@ spec:
   createNamespace: true
   version: 33.0.0
   valuesContent: |-
+    deployment:
+      podAnnotations:
+        linkerd.io/inject: enabled
     logs:
       general:
         level: TRACE

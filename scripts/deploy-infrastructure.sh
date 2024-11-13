@@ -70,11 +70,11 @@ kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --
 
 # grafana route
 echo "deploying grafana route"
-export SERVICE_NAME="grafana"
+export SERVICE_NAME="kube-prometheus-stack-grafana"
 export NAMESPACE="monitoring"
 export HOSTNAME="grafana.debian-k3s"
 export PORT="80"
-export NAME="kube-prometheus-stack-grafana"
+export NAME="grafana"
 envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
 
 # loki-stack
@@ -103,3 +103,12 @@ echo "deploying ngrok"
 envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
 kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
 kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch
+
+# linkerd
+echo "deploying linkerd"
+export CA_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | sed 's/^/      /')
+export ISSUER_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | sed 's/^/            /')
+export ISSUER_KEY_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | sed 's/^/            /')
+envsubst < deploy/k8s/charts/linkerd.yaml | kubectl apply -f -
+kubectl wait --for=create --timeout=90s deployment/linkerd-destination -n linkerd
+kubectl rollout status deployment/linkerd-destination -n linkerd --timeout=90s --watch
