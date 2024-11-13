@@ -9,6 +9,8 @@ spec:
     - grafana.debian-k3s
     - tempo.debian-k3s
     - chess-bot.debian-k3s
+    - prometheus.debian-k3s
+    - linkerd-viz.debian-k3s
   secretName: gateway-tls
   issuerRef:
     name: k3s-server-ca-issuer

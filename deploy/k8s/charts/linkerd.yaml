@@ -48,3 +48,24 @@ ${CA_CERT_PEM}
 ${ISSUER_CERT_PEM}
           keyPEM: |
 ${ISSUER_KEY_PEM}
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: linkerd-viz
+  namespace: kube-system
+spec:
+  repo: https://helm.linkerd.io/edge
+  chart: linkerd-viz
+  version: 2024.11.2
+  targetNamespace: linkerd
+  createNamespace: true
+  valuesContent: |-
+    dashboard:
+      enforcedHostRegexp: '.*'
+    grafana:
+      url: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local:80
+    prometheusUrl: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+    prometheus:
+      enabled: false
+    

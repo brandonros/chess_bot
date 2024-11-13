@@ -77,6 +77,15 @@ export PORT="80"
 export NAME="grafana"
 envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
 
+# prometheus route
+echo "deploying prometheus route"
+export SERVICE_NAME="kube-prometheus-stack-prometheus"
+export NAMESPACE="monitoring"
+export HOSTNAME="prometheus.debian-k3s"
+export PORT="9090"
+export NAME="prometheus"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
+
 # loki-stack
 echo "deploying loki-stack"
 kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
@@ -111,4 +120,13 @@ export ISSUER_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt 
 export ISSUER_KEY_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | sed 's/^/            /')
 envsubst < deploy/k8s/charts/linkerd.yaml | kubectl apply -f -
 kubectl wait --for=create --timeout=90s deployment/linkerd-destination -n linkerd
-kubectl rollout status deployment/linkerd-destination -n linkerd --timeout=90s --watch
+#kubectl rollout status deployment/linkerd-destination -n linkerd --timeout=90s --watch TODO: weird bug with linkerd-destination
+
+# linkerd-viz route
+echo "deploying linkerd-viz route"
+export SERVICE_NAME="web"
+export NAMESPACE="linkerd"
+export HOSTNAME="linkerd-viz.debian-k3s"
+export PORT="8084"
+export NAME="linkerd-viz"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -

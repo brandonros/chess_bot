@@ -12,7 +12,8 @@ spec:
   valuesContent: |-
     deployment:
       podAnnotations:
-        linkerd.io/inject: enabled
+        linkerd.io/inject: enabled # TODO: ingress or enabled
+        config.linkerd.io/proxy-log-level: trace
     logs:
       general:
         level: TRACE
