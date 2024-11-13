@@ -42,40 +42,64 @@ echo "deploying docker-registry"
 kubectl apply -f ./deploy/k8s/charts/docker-registry.yaml
 kubectl wait --for=create --timeout=90s deployment/docker-registry -n docker-registry
 kubectl rollout status deployment/docker-registry -n docker-registry --timeout=90s --watch
-kubectl apply -f ./deploy/k8s/routes/docker-registry-route.yaml
 
-# # storage
-# echo "deploying storage"
-# export HOST_PATH="/mnt/chess_bot"
-# envsubst < ./deploy/k8s/storage/local-path-pvc.yaml | kubectl apply -f -
+# docker-registry route
+echo "deploying docker-registry route"
+export SERVICE_NAME="docker-registry"
+export NAMESPACE="docker-registry"
+export HOSTNAME="docker-registry.debian-k3s"
+export PORT="5000"
+export NAME="docker-registry"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
 
-# # dns
-# echo "reconfiguring coredns"
-# export TRAEFIK_IP=$(kubectl -n traefik get svc traefik -o jsonpath='{.spec.clusterIP}')
-# envsubst < deploy/k8s/dns/coredns-config.yaml | kubectl apply -f -
+# storage
+echo "deploying storage"
+export HOST_PATH="/mnt/chess_bot"
+envsubst < ./deploy/k8s/storage/local-path-pvc.yaml | kubectl apply -f -
 
-# # kube-prometheus-stack
-# echo "deploying kube-prometheus-stack"
-# kubectl apply -f ./deploy/k8s/charts/kube-prometheus-stack.yaml
-# kubectl wait --for=create --timeout=90s deployment/kube-prometheus-stack-grafana -n monitoring
-# kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s --watch
-# #kubectl apply -f ./deploy/k8s/ingress/grafana-external-ingress.yaml
+# dns
+echo "reconfiguring coredns"
+export TRAEFIK_IP=$(kubectl -n traefik get svc traefik -o jsonpath='{.spec.clusterIP}')
+envsubst < deploy/k8s/dns/coredns-config.yaml | kubectl apply -f -
 
-# # loki-stack
-# echo "deploying loki-stack"
-# kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
-# kubectl wait --for=create --timeout=90s statefulset/loki-stack -n monitoring
-# kubectl rollout status statefulset/loki-stack -n monitoring --timeout=90s --watch
+# kube-prometheus-stack
+echo "deploying kube-prometheus-stack"
+kubectl apply -f ./deploy/k8s/charts/kube-prometheus-stack.yaml
+kubectl wait --for=create --timeout=90s deployment/kube-prometheus-stack-grafana -n monitoring
+kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s --watch
 
-# # tempo
-# echo "deploying tempo"
-# kubectl apply -f ./deploy/k8s/charts/tempo.yaml
-# kubectl wait --for=create --timeout=90s statefulset/tempo -n monitoring
-# kubectl rollout status statefulset/tempo -n monitoring --timeout=90s --watch
-# #kubectl apply -f ./deploy/k8s/ingress/tempo-external-ingress.yaml
+# grafana route
+echo "deploying grafana route"
+export SERVICE_NAME="grafana"
+export NAMESPACE="monitoring"
+export HOSTNAME="grafana.debian-k3s"
+export PORT="80"
+export NAME="kube-prometheus-stack-grafana"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
 
-# # ngrok
-# echo "deploying ngrok"
-# envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
-# kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
-# kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch
+# loki-stack
+echo "deploying loki-stack"
+kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
+kubectl wait --for=create --timeout=90s statefulset/loki-stack -n monitoring
+kubectl rollout status statefulset/loki-stack -n monitoring --timeout=90s --watch
+
+# tempo
+echo "deploying tempo"
+kubectl apply -f ./deploy/k8s/charts/tempo.yaml
+kubectl wait --for=create --timeout=90s statefulset/tempo -n monitoring
+kubectl rollout status statefulset/tempo -n monitoring --timeout=90s --watch
+
+# tempo route
+echo "deploying tempo route"
+export SERVICE_NAME="tempo"
+export NAMESPACE="monitoring"
+export HOSTNAME="tempo.debian-k3s"
+export PORT="4318"
+export NAME="tempo"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
+
+# ngrok
+echo "deploying ngrok"
+envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
+kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
+kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch

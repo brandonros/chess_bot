@@ -6,6 +6,9 @@ metadata:
 spec:
   dnsNames:
     - docker-registry.debian-k3s
+    - grafana.debian-k3s
+    - tempo.debian-k3s
+    - chess-bot.debian-k3s
   secretName: gateway-tls
   issuerRef:
     name: k3s-server-ca-issuer

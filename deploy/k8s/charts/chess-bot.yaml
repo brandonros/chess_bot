@@ -34,7 +34,7 @@ spec:
                       memory: 1024Mi
                       cpu: 1000m
                   image:
-                    repository: docker-registry.node.external/chess-bot
+                    repository: docker-registry.debian-k3s/chess-bot
                     tag: latest
                   env:
                     RUST_LOG:
