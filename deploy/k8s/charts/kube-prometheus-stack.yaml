@@ -7,7 +7,6 @@ spec:
   repo: https://prometheus-community.github.io/helm-charts
   chart: kube-prometheus-stack
   targetNamespace: monitoring
-  createNamespace: true
   valuesContent: |-
     prometheus:
       prometheusSpec:

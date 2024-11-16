@@ -7,7 +7,6 @@ spec:
   repo: https://grafana.github.io/helm-charts
   chart: loki-stack
   targetNamespace: monitoring
-  createNamespace: true
   valuesContent: |-
     loki:
       isDefault: false

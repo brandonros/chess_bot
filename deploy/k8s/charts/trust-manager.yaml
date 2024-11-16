@@ -7,7 +7,6 @@ spec:
   repo: https://charts.jetstack.io
   chart: trust-manager
   targetNamespace: trust-manager
-  createNamespace: true
   version: v0.9.0
   valuesContent: |-
     crds:

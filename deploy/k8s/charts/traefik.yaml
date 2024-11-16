@@ -7,7 +7,6 @@ spec:
   repo: https://traefik.github.io/charts
   chart: traefik
   targetNamespace: traefik
-  createNamespace: true
   version: 33.0.0
   valuesContent: |-
     deployment:
@@ -42,5 +41,5 @@ spec:
                   from: Same
               certificateRefs:
                 - kind: Secret
-                  name: gateway-tls
+                  name: traefik-gateway-tls
                   namespace: traefik

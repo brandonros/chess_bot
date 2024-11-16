@@ -20,7 +20,7 @@ metadata:
   namespace: traefik
 spec:
   parentRefs:
-  - name: gateway
+  - name: traefik-gateway
     namespace: traefik
     kind: Gateway
     sectionName: websecure

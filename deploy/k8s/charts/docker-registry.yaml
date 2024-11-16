@@ -7,4 +7,3 @@ spec:
   repo: https://helm.twun.io
   chart: docker-registry
   targetNamespace: docker-registry
-  createNamespace: true

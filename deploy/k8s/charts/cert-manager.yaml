@@ -7,7 +7,6 @@ spec:
   repo: https://charts.jetstack.io
   chart: cert-manager
   targetNamespace: cert-manager
-  createNamespace: true
   version: v1.16.1
   valuesContent: |-
     crds:

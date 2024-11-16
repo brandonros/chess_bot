@@ -8,7 +8,6 @@ spec:
   chart: linkerd-crds
   version: 2024.11.3
   targetNamespace: linkerd
-  createNamespace: true
   valuesContent: |-
     # TODO: CRD collision as per https://github.com/linkerd/linkerd2/issues/12232
     enableHttpRoutes: false

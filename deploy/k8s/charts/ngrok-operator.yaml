@@ -7,7 +7,6 @@ spec:
   repo: https://charts.ngrok.com
   chart: ngrok-operator
   targetNamespace: ngrok
-  createNamespace: true
   version: 0.16.0-rc.2
   valuesContent: |-
     credentials:

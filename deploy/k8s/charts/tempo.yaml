@@ -7,4 +7,3 @@ spec:
   repo: https://grafana.github.io/helm-charts
   chart: tempo
   targetNamespace: monitoring
-  createNamespace: true

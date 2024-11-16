@@ -7,7 +7,6 @@ spec:
   repo: https://raw.githubusercontent.com/brandonros/hull-wrapper/master/
   chart: hull-wrapper
   targetNamespace: chess-bot
-  createNamespace: true
   version: 0.2.0
   valuesContent: |-
     hull:
