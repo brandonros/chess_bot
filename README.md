@@ -34,9 +34,6 @@ export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.
 # deploy application
 ./scripts/deploy-application.sh
 
-# append exposed external services from ingress to /etc/hosts
-echo "127.0.0.1 chess-bot.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s linkerd-viz.debian-k3s" | sudo tee -a /etc/hosts
-
 # get best move
 curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.debian-k3s/move/best -d '{
   "engine": "rustic",

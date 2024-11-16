@@ -1,0 +1,26 @@
+apiVersion: policy.linkerd.io/v1beta3
+kind: Server
+metadata:
+  name: chess-bot-server
+  namespace: chess-bot
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: chess-bot
+  port: service
+---
+apiVersion: policy.linkerd.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: chess-bot-test-route
+  namespace: chess-bot
+spec:
+  parentRefs:
+    - name: chess-bot-server
+      kind: Server
+      group: policy.linkerd.io
+  rules:
+    - matches:
+      - path:
+          value: "/"
+          type: "PathPrefix"
