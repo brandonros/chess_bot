@@ -11,7 +11,7 @@ echo "trusting k3s-generated CA"
 sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain /Users/brandon/.lima/debian-k3s/copied-from-guest/server-ca.crt
 
 # append exposed external services from ingress to /etc/hosts if not already present
-HOSTS_ENTRY="127.0.0.1 chess-bot.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s linkerd-viz.debian-k3s"
+HOSTS_ENTRY="127.0.0.1 chess-bot.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s"
 if ! grep -qF "$HOSTS_ENTRY" /etc/hosts; then
     echo "$HOSTS_ENTRY" | sudo tee -a /etc/hosts
 fi

@@ -22,24 +22,15 @@ export BASE64_ENCODED_CERT_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/se
 export BASE64_ENCODED_KEY_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | base64)
 envsubst < ./deploy/k8s/certs/gateway-tls.yaml | kubectl apply -f -
 
-# cert-manager linkerd
-echo "creating linkerd"
-kubectl apply -f ./deploy/k8s/certs/linkerd.yaml
+# istio-base
+echo "deploying istio-base"
+kubectl apply -f ./deploy/k8s/charts/istio-base.yaml
 
-# trust-manager
-echo "deploying trust-manager"
-kubectl apply -f ./deploy/k8s/charts/trust-manager.yaml
-kubectl wait --for=create --timeout=90s deployment/trust-manager -n trust-manager
-kubectl rollout status deployment/trust-manager -n trust-manager --timeout=90s --watch
-
-# two versions of gateway-api because linkerd needs old v1beta and traefik needs new v1
-if kubectl get crd gatewayclasses.gateway.networking.k8s.io -o json | jq -e '.status.storedVersions | contains(["v1beta1"])' >/dev/null; then
-    echo "GatewayClass v1beta1 CRD is installed"
-else
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v0.8.1/experimental-install.yaml
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.1/experimental-install.yaml
-    sleep 10 # allow rollout
-fi
+# istiod
+echo "deploying istiod"
+kubectl apply -f ./deploy/k8s/charts/istiod.yaml
+kubectl wait --for=create --timeout=90s deployment/istiod -n istio-system
+kubectl rollout status deployment/istiod -n istio-system --timeout=90s --watch
 
 # traefik
 echo "deploying traefik"
@@ -126,31 +117,3 @@ echo "deploying ngrok"
 envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
 kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
 kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch
-
-# linkerd-crds
-echo "deploying linkerd-crds"
-kubectl apply -f ./deploy/k8s/charts/linkerd-crds.yaml
-
-# linkerd-control-plane
-echo "deploying linkerd-control-plane"
-export CA_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | sed 's/^/      /')
-export ISSUER_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | sed 's/^/            /')
-export ISSUER_KEY_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | sed 's/^/            /')
-envsubst < deploy/k8s/charts/linkerd-control-plane.yaml | kubectl apply -f -
-kubectl wait --for=create --timeout=90s deployment/linkerd-destination -n linkerd
-kubectl rollout status deployment/linkerd-destination -n linkerd --timeout=90s --watch
-
-# linkerd-viz
-echo "deploying linkerd-viz"
-kubectl apply -f ./deploy/k8s/charts/linkerd-viz.yaml
-kubectl wait --for=create --timeout=90s deployment/web -n linkerd
-kubectl rollout status deployment/web -n linkerd --timeout=90s --watch
-
-# linkerd-viz route
-echo "deploying linkerd-viz route"
-export SERVICE_NAME="web"
-export NAMESPACE="linkerd"
-export HOSTNAME="linkerd-viz.debian-k3s"
-export PORT="8084"
-export NAME="linkerd-viz"
-envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -

@@ -24,8 +24,7 @@ spec:
           chess-bot:
             replicas: 2
             annotations:
-              linkerd.io/inject: enabled
-              config.linkerd.io/proxy-log-level: trace
+              sidecar.istio.io/inject: "true"
             pod:
               containers:
                 main:
