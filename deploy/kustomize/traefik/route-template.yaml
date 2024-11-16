@@ -20,7 +20,7 @@ metadata:
   namespace: traefik
 spec:
   parentRefs:
-  - name: traefik-gateway
+  - name: debian-k3s-gateway
     namespace: traefik
     kind: Gateway
     sectionName: websecure

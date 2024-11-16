@@ -41,5 +41,5 @@ spec:
                   from: Same
               certificateRefs:
                 - kind: Secret
-                  name: traefik-gateway-tls
+                  name: debian-k3s-gateway-tls
                   namespace: traefik

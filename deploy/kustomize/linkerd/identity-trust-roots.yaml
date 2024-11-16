@@ -6,8 +6,9 @@ metadata:
 spec:
   sources:
   - secret:
-      name: "linkerd-identity-trust-roots"
-      key: "ca.crt"
+      name: debian-k3s-tls
+      key: tls.crt
   target:
     configMap:
-      key: "ca-bundle.crt"
+      key: ca-bundle.crt
+      
