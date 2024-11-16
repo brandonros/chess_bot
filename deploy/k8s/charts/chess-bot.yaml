@@ -24,7 +24,7 @@ spec:
           chess-bot:
             replicas: 2
             annotations:
-              sidecar.istio.io/inject: "true"
+              linkerd.io/inject: enabled
             pod:
               containers:
                 main:

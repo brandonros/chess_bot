@@ -16,21 +16,60 @@ kubectl rollout status deployment/cert-manager -n cert-manager --timeout=90s --w
 kubectl wait --for=condition=available --timeout=90s deployment/cert-manager-webhook -n cert-manager
 kubectl rollout status deployment/cert-manager-webhook -n cert-manager --timeout=90s --watch
 
-# cert-manager gateway-tls
+# debian-k3s-tls
+echo "deploying debian-k3s-tls"
+export BASE64_ENCODED_CERT_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | base64)
+export BASE64_ENCODED_KEY_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | base64)
+envsubst < ./deploy/k8s/secrets/debian-k3s-tls.yaml | kubectl apply -f -
+
+# debian-k3s-issuer
+echo "deploying debian-k3s-issuer"
+envsubst < ./deploy/k8s/ca/debian-k3s-issuer.yaml | kubectl apply -f -
+
+# gateway-tls cert
 echo "creating gateway-tls"
 export BASE64_ENCODED_CERT_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | base64)
 export BASE64_ENCODED_KEY_CONTENT=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | base64)
 envsubst < ./deploy/k8s/certs/gateway-tls.yaml | kubectl apply -f -
+exit 1
 
-# istio-base
-echo "deploying istio-base"
-kubectl apply -f ./deploy/k8s/charts/istio-base.yaml
+# cert-manager linkerd
+echo "creating linkerd"
+kubectl apply -f ./deploy/k8s/certs/linkerd.yaml
 
-# istiod
-echo "deploying istiod"
-kubectl apply -f ./deploy/k8s/charts/istiod.yaml
-kubectl wait --for=create --timeout=90s deployment/istiod -n istio-system
-kubectl rollout status deployment/istiod -n istio-system --timeout=90s --watch
+# trust-manager
+echo "deploying trust-manager"
+kubectl apply -f ./deploy/k8s/charts/trust-manager.yaml
+kubectl wait --for=create --timeout=90s deployment/trust-manager -n trust-manager
+kubectl rollout status deployment/trust-manager -n trust-manager --timeout=90s --watch
+
+# two versions of gateway-api because linkerd needs old v1beta and traefik needs new v1
+if kubectl get crd gatewayclasses.gateway.networking.k8s.io -o json | jq -e '.status.storedVersions | contains(["v1beta1"])' >/dev/null; then
+    echo "GatewayClass v1beta1 CRD is installed"
+else
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v0.8.1/experimental-install.yaml
+    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.1/experimental-install.yaml
+    sleep 10 # allow rollout
+fi
+
+# linkerd-crds
+echo "deploying linkerd-crds"
+kubectl apply -f ./deploy/k8s/charts/linkerd-crds.yaml
+
+# linkerd-control-plane
+echo "deploying linkerd-control-plane"
+export CA_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | sed 's/^/      /')
+export ISSUER_CERT_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.crt | sed 's/^/            /')
+export ISSUER_KEY_PEM=$(cat ~/.lima/debian-k3s/copied-from-guest/server-ca.key | sed 's/^/            /')
+envsubst < deploy/k8s/charts/linkerd-control-plane.yaml | kubectl apply -f -
+kubectl wait --for=create --timeout=90s deployment/linkerd-destination -n linkerd
+kubectl rollout status deployment/linkerd-destination -n linkerd --timeout=90s --watch
+
+# linkerd-viz
+echo "deploying linkerd-viz"
+kubectl apply -f ./deploy/k8s/charts/linkerd-viz.yaml
+kubectl wait --for=create --timeout=90s deployment/web -n linkerd
+kubectl rollout status deployment/web -n linkerd --timeout=90s --watch
 
 # traefik
 echo "deploying traefik"
@@ -48,15 +87,6 @@ kubectl apply -f ./deploy/k8s/charts/docker-registry.yaml
 kubectl wait --for=create --timeout=90s deployment/docker-registry -n docker-registry
 kubectl rollout status deployment/docker-registry -n docker-registry --timeout=90s --watch
 
-# docker-registry route
-echo "deploying docker-registry route"
-export SERVICE_NAME="docker-registry"
-export NAMESPACE="docker-registry"
-export HOSTNAME="docker-registry.debian-k3s"
-export PORT="5000"
-export NAME="docker-registry"
-envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
-
 # storage
 echo "deploying storage"
 export HOST_PATH="/mnt/chess_bot"
@@ -72,6 +102,42 @@ echo "deploying kube-prometheus-stack"
 kubectl apply -f ./deploy/k8s/charts/kube-prometheus-stack.yaml
 kubectl wait --for=create --timeout=90s deployment/kube-prometheus-stack-grafana -n monitoring
 kubectl rollout status deployment/kube-prometheus-stack-grafana -n monitoring --timeout=180s --watch
+
+# loki-stack
+echo "deploying loki-stack"
+kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
+kubectl wait --for=create --timeout=90s statefulset/loki-stack -n monitoring
+kubectl rollout status statefulset/loki-stack -n monitoring --timeout=90s --watch
+
+# tempo
+echo "deploying tempo"
+kubectl apply -f ./deploy/k8s/charts/tempo.yaml
+kubectl wait --for=create --timeout=90s statefulset/tempo -n monitoring
+kubectl rollout status statefulset/tempo -n monitoring --timeout=90s --watch
+
+# ngrok
+echo "deploying ngrok"
+envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
+kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
+kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch
+
+# linkerd-viz route
+echo "deploying linkerd-viz route"
+export SERVICE_NAME="web"
+export NAMESPACE="linkerd"
+export HOSTNAME="linkerd-viz.debian-k3s"
+export PORT="8084"
+export NAME="linkerd-viz"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
+
+# docker-registry route
+echo "deploying docker-registry route"
+export SERVICE_NAME="docker-registry"
+export NAMESPACE="docker-registry"
+export HOSTNAME="docker-registry.debian-k3s"
+export PORT="5000"
+export NAME="docker-registry"
+envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
 
 # grafana route
 echo "deploying grafana route"
@@ -91,18 +157,6 @@ export PORT="9090"
 export NAME="prometheus"
 envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
 
-# loki-stack
-echo "deploying loki-stack"
-kubectl apply -f ./deploy/k8s/charts/loki-stack.yaml
-kubectl wait --for=create --timeout=90s statefulset/loki-stack -n monitoring
-kubectl rollout status statefulset/loki-stack -n monitoring --timeout=90s --watch
-
-# tempo
-echo "deploying tempo"
-kubectl apply -f ./deploy/k8s/charts/tempo.yaml
-kubectl wait --for=create --timeout=90s statefulset/tempo -n monitoring
-kubectl rollout status statefulset/tempo -n monitoring --timeout=90s --watch
-
 # tempo route
 echo "deploying tempo route"
 export SERVICE_NAME="tempo"
@@ -111,9 +165,3 @@ export HOSTNAME="tempo.debian-k3s"
 export PORT="4318"
 export NAME="tempo"
 envsubst < ./deploy/k8s/routes/route.yaml | kubectl apply -f -
-
-# ngrok
-echo "deploying ngrok"
-envsubst < ./deploy/k8s/charts/ngrok-operator.yaml | kubectl apply -f -
-kubectl wait --for=create --timeout=90s deployment/ngrok-operator-manager -n ngrok
-kubectl rollout status deployment/ngrok-operator-manager -n ngrok --timeout=90s --watch

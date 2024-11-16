@@ -4,14 +4,16 @@ Rust JSON HTTP API over chess move scoring engine
 
 ## Technologies used
 
-- Lima (Apple Virtualization framework, Ubuntu GNU/Linux virtual machine)
-- K3s (Kubernetes cluster, workload orchestration)
+- Lima (Apple Virtualization framework, Debian GNU/Linux virtual machine)
+- k3s (Kubernetes cluster, workload orchestration)
 - Traefik (ingress, SSL, load balancing, routing)
-- cert-manager (automated certificate management)
+- Linkerd (service mesh, observability)
+- cert-manager + trust-manager (automated certificate management)
 - docker-registry (stores and serves container images)
 - Kaniko (builds container images)
 - Helm (deployment package manager / YAML templating engine)
-- Rust (JSON HTTP server)
+- smol (Rust async runtime)
+- rustic (chess engine)
 
 ## How to use
 
