@@ -11,6 +11,6 @@ spec:
     algorithm: ECDSA
     size: 256
   issuerRef:
-    name: k3s-server-ca-issuer
+    name: debian-k3s-ca-issuer
     kind: ClusterIssuer
     group: cert-manager.io
