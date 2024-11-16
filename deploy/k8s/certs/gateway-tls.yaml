@@ -1,17 +1,17 @@
-apiVersion: cert-manager.io/v1
-kind: Certificate
+apiVersion: v1
+kind: Secret
 metadata:
-  name: gateway-tls
-  namespace: traefik
+  name: k3s-server-ca-secret
+  namespace: cert-manager
+type: kubernetes.io/tls
+data:
+  tls.crt: ${BASE64_ENCODED_CERT_CONTENT}
+  tls.key: ${BASE64_ENCODED_KEY_CONTENT}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: k3s-server-ca-issuer
 spec:
-  dnsNames:
-    - docker-registry.debian-k3s
-    - grafana.debian-k3s
-    - tempo.debian-k3s
-    - chess-bot.debian-k3s
-    - prometheus.debian-k3s
-    - linkerd-viz.debian-k3s
-  secretName: gateway-tls
-  issuerRef:
-    name: k3s-server-ca-issuer
-    kind: ClusterIssuer
+  ca:
+    secretName: k3s-server-ca-secret

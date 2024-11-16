@@ -1,15 +1,56 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: traefik
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: gateway-tls
+  namespace: traefik
+spec:
+  dnsNames:
+    - docker-registry.debian-k3s
+    - grafana.debian-k3s
+    - tempo.debian-k3s
+    - chess-bot.debian-k3s
+    - prometheus.debian-k3s
+    - linkerd-viz.debian-k3s
+  secretName: gateway-tls
+  issuerRef:
+    name: k3s-server-ca-issuer
+    kind: ClusterIssuer
+---
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: traefik-crds
+  namespace: kube-system
+spec:
+  repo: https://raw.githubusercontent.com/brandonros/traefik-helm-chart/feat/crds
+  chart: traefik-crds
+  targetNamespace: traefik
+  createNamespace: true
+  version: 0.0.1
+  valuesContent: |-
+    traefik: true
+    gateway_api: false
+---
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
   name: traefik
   namespace: kube-system
 spec:
-  repo: https://traefik.github.io/charts
+  repo: https://raw.githubusercontent.com/brandonros/traefik-helm-chart/feat/crds
   chart: traefik
   targetNamespace: traefik
   createNamespace: true
-  version: 33.0.0
+  version: 34.0.0
   valuesContent: |-
+    traefik-crds:
+      traefik: true
+      gateway_api: false
     deployment:
       podAnnotations:
         linkerd.io/inject: enabled # TODO: ingress or enabled
