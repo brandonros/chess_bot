@@ -14,6 +14,7 @@ Rust JSON API over chess move scoring engine
 - Helm (deployment package manager / YAML templating engine)
 - smol (Rust async runtime)
 - rustic (chess engine)
+- ngrok (local-to-public endpoint mapper)
 
 ## TODO:
 
