@@ -44,6 +44,7 @@ if ! kubectl get crd gatewayclasses.gateway.networking.k8s.io -o json | jq -e '.
 then
     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v0.8.1/experimental-install.yaml
     kubectl wait --for condition=established --timeout=60s crd/httproutes.gateway.networking.k8s.io
+    kubectl wait --for=condition=available --timeout=60s deployment/gateway-api-admission-server -n gateway-system
 
     kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.1/experimental-install.yaml
     kubectl wait --for condition=established --timeout=60s crd/backendlbpolicies.gateway.networking.k8s.io
