@@ -1,12 +1,5 @@
 use std::sync::{Arc, Mutex};
 
-use pleco::{
-    bots::{
-        AlphaBetaSearcher, IterativeSearcher, JamboreeSearcher, MiniMaxSearcher,
-        ParallelMiniMaxSearcher,
-    },
-    tools::Searcher,
-};
 use rustic::{
     engine::defs::{Information, SearchData, Verbosity, TT},
     movegen::MoveGenerator,
@@ -19,36 +12,6 @@ use crate::structs::{GetBestMoveRequest, GetBestMoveResponse};
 pub async fn get_best_move(request: GetBestMoveRequest) -> SimpleResult<GetBestMoveResponse> {
     // get best move based on engine type
     let best_move = match request.engine.as_str() {
-        "pleco:alpha-beta" => {
-            let board = pleco::Board::from_fen(&request.fen)
-                .map_err(|err| box_err!(format!("failed to parse fen: {err:?}")))?;
-            let best_move = AlphaBetaSearcher::best_move(board, request.depth);
-            format!("{best_move}")
-        }
-        "pleco:minimax" => {
-            let board = pleco::Board::from_fen(&request.fen)
-                .map_err(|err| box_err!(format!("failed to parse fen: {err:?}")))?;
-            let best_move = MiniMaxSearcher::best_move(board, request.depth);
-            format!("{best_move}")
-        }
-        "pleco:parallel-minimax" => {
-            let board = pleco::Board::from_fen(&request.fen)
-                .map_err(|err| box_err!(format!("failed to parse fen: {err:?}")))?;
-            let best_move = ParallelMiniMaxSearcher::best_move(board, request.depth);
-            format!("{best_move}")
-        }
-        "pleco:jamboree" => {
-            let board = pleco::Board::from_fen(&request.fen)
-                .map_err(|err| box_err!(format!("failed to parse fen: {err:?}")))?;
-            let best_move = JamboreeSearcher::best_move(board, request.depth);
-            format!("{best_move}")
-        }
-        "pleco:iterative" => {
-            let board = pleco::Board::from_fen(&request.fen)
-                .map_err(|err| box_err!(format!("failed to parse fen: {err:?}")))?;
-            let best_move = IterativeSearcher::best_move(board, request.depth);
-            format!("{best_move}")
-        }
         "rustic" => {
             // setup board
             let mut board = rustic::board::Board::new();

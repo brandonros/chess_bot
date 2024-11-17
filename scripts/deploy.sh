@@ -15,7 +15,7 @@ then
 
     # append exposed external services from ingress to /etc/hosts if not already present
     echo "adding to /etc/hosts"
-    HOSTS_ENTRY="127.0.0.1 chess-bot.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s linkerd-viz.debian-k3s"
+    HOSTS_ENTRY="127.0.0.1 chess-engine-api.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s linkerd-viz.debian-k3s"
     if ! grep -qF "$HOSTS_ENTRY" /etc/hosts; then
         echo "$HOSTS_ENTRY" | sudo tee -a /etc/hosts
     fi
@@ -37,7 +37,7 @@ envsubst < ./deploy/kustomize/ngrok/chart-template.yaml > ./deploy/kustomize/ngr
 
 # compile ngrok-ingress template
 export NGROK_HOST=${NGROK_HOST}
-envsubst < ./deploy/kustomize/chess-bot/ngrok-ingress-template.yaml > ./deploy/kustomize/chess-bot/ngrok-ingress.yaml
+envsubst < ./deploy/kustomize/chess-engine-api/ngrok-ingress-template.yaml > ./deploy/kustomize/chess-engine-api/ngrok-ingress.yaml
 
 # workaround traefik needing v1.1.1 gateway-api and linkerd needing v0.8.1 gateway-api crds
 if ! kubectl get crd gatewayclasses.gateway.networking.k8s.io -o json | jq -e '.status.storedVersions | contains(["v1beta1"])' >/dev/null
@@ -60,13 +60,13 @@ envsubst < deploy/kustomize/coredns/config-template.yaml > deploy/kustomize/core
 kubectl apply -k ./deploy/kustomize/coredns
 
 # check if we need to build the application
-if ! curl -s https://docker-registry.debian-k3s/v2/_catalog | jq -e '.repositories | contains(["chess-bot"])' >/dev/null; then
-    echo "chess-bot image not found, building application"
+if ! curl -s https://docker-registry.debian-k3s/v2/_catalog | jq -e '.repositories | contains(["chess-engine-api"])' >/dev/null; then
+    echo "chess-engine-api image not found, building application"
 
     # create build job
     export TIMESTAMP=$(date +%s)
     export JOB_NAME="kaniko-build-${TIMESTAMP}"
-    export IMAGE_DESTINATION="docker-registry.docker-registry.svc.cluster.local:5000/chess-bot:latest"
+    export IMAGE_DESTINATION="docker-registry.docker-registry.svc.cluster.local:5000/chess-engine-api:latest"
     export PVC_NAME="local-path-pvc"
     export DOCKERFILE="./Dockerfile"
     export CONTEXT="/workspace"
