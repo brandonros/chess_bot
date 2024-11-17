@@ -19,7 +19,6 @@ Rust JSON API over chess move scoring engine
 ## TODO:
 
 * backstage - service catalog
-* kong - api gateway
 * nats - messaging queue
 * redis - caching
 * postgres - database

@@ -24,6 +24,7 @@ spec:
             replicas: 2
             annotations:
               linkerd.io/inject: enabled
+              config.linkerd.io/proxy-log-level: debug
             pod:
               containers:
                 main:
