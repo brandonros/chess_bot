@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./chart.yaml
-  - ./certificate.yaml
+  - ./gateway-certificate.yaml
   - ./gateway.yaml
   - ./docker-registry-route.yaml
   - ./grafana-route.yaml
@@ -11,3 +11,4 @@ resources:
   - ./tempo-route.yaml
   - ./linkerd-viz-route.yaml
   - ./chess-engine-api-route.yaml
+  - ./backstage-route.yaml

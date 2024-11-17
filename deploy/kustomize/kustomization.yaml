@@ -29,3 +29,6 @@ resources:
 
   # chess engine api
   - chess-engine-api
+
+  # backstage
+  - backstage

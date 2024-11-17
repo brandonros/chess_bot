@@ -11,6 +11,7 @@ spec:
     - chess-engine-api.debian-k3s
     - prometheus.debian-k3s
     - linkerd-viz.debian-k3s
+    - backstage.debian-k3s
   secretName: debian-k3s-gateway-tls
   issuerRef:
     name: debian-k3s-ca-issuer
