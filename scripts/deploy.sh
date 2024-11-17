@@ -54,6 +54,25 @@ kubectl apply -k ./deploy/kustomize
 
 # patch coredns for external cluster pulling from docker-registry in the cluster
 echo "reconfiguring coredns"
+kubectl wait --for=condition=available --timeout=300s deployment/traefik -n traefik
 export TRAEFIK_IP=$(kubectl -n traefik get svc traefik -o jsonpath='{.spec.clusterIP}')
 envsubst < deploy/kustomize/coredns/config-template.yaml > deploy/kustomize/coredns/config.yaml
 kubectl apply -k ./deploy/kustomize/coredns
+
+# check if we need to build the application
+if ! curl -s https://docker-registry.debian-k3s/v2/_catalog | jq -e '.repositories | contains(["chess-bot"])' >/dev/null; then
+    echo "chess-bot image not found, building application"
+
+    # create build job
+    export TIMESTAMP=$(date +%s)
+    export JOB_NAME="kaniko-build-${TIMESTAMP}"
+    export IMAGE_DESTINATION="docker-registry.docker-registry.svc.cluster.local:5000/chess-bot:latest"
+    export PVC_NAME="local-path-pvc"
+    export DOCKERFILE="./Dockerfile"
+    export CONTEXT="/workspace"
+    envsubst < ./deploy/kustomize/cicd/build-job-template.yaml | kubectl apply -f -
+
+    # wait for job to complete
+    echo "waiting for kaniko build job to complete"
+    kubectl wait --for=condition=complete --timeout=300s job/${JOB_NAME} -n cicd
+fi

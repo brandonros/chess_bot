@@ -24,11 +24,8 @@ brew install kubectl lima helm
 # configure kubectl
 export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.yaml"
 
-# create VM + deploy infrastructure
+# create VM + deploy infrastructure + build container
 ./scripts/deploy.sh
-
-# build application
-./scripts/build-application.sh
 
 # get best move
 curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.debian-k3s/move/best -d '{
