@@ -13,7 +13,7 @@ resources:
   - monitoring
 
   # service mesh
-  - kong-mesh
+  - linkerd
 
   # gateway / ingress
   - traefik

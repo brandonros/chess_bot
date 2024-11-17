@@ -9,5 +9,5 @@ resources:
   - ./grafana-route.yaml
   - ./prometheus-route.yaml
   - ./tempo-route.yaml
-  - ./kong-mesh-route.yaml
+  - ./linkerd-viz-route.yaml
   - ./chess-engine-api-route.yaml
