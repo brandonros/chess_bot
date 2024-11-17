@@ -5,3 +5,9 @@ resources:
   - ./chart.yaml
   - ./certificate.yaml
   - ./gateway.yaml
+  - ./docker-registry-route.yaml
+  - ./grafana-route.yaml
+  - ./prometheus-route.yaml
+  - ./tempo-route.yaml
+  - ./linkerd-viz-route.yaml
+  - ./chess-bot-route.yaml
