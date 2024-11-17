@@ -27,7 +27,7 @@ cp ~/.lima/debian-k3s/copied-from-guest/server-ca.crt ./deploy/kustomize/cert-ma
 cp ~/.lima/debian-k3s/copied-from-guest/server-ca.key ./deploy/kustomize/cert-manager/certs/server-ca.key
 
 # compile cicd template
-export HOST_PATH="/mnt/chess_bot"
+export HOST_PATH="/mnt/chess_engine_api"
 envsubst < ./deploy/kustomize/cicd/pvc-template.yaml > ./deploy/kustomize/cicd/pvc.yaml
 
 # compile ngrok-operator template

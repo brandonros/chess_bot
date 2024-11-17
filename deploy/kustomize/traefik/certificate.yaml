@@ -8,7 +8,7 @@ spec:
     - docker-registry.debian-k3s
     - grafana.debian-k3s
     - tempo.debian-k3s
-    - chess-bot.debian-k3s
+    - chess-engine-api.debian-k3s
     - prometheus.debian-k3s
     - linkerd-viz.debian-k3s
   secretName: debian-k3s-gateway-tls

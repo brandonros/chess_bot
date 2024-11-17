@@ -16,5 +16,5 @@ RUN cargo build --release
 # We do not need the Rust toolchain to run the binary!
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
-COPY --from=builder /app/target/release/chess_bot /usr/local/bin
-ENTRYPOINT ["/usr/local/bin/chess_bot"]
+COPY --from=builder /app/target/release/chess_engine_api /usr/local/bin
+ENTRYPOINT ["/usr/local/bin/chess_engine_api"]

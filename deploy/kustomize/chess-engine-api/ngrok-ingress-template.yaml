@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: chess-bot-ngrok
-  namespace: chess-bot
+  name: chess-engine-api-ngrok
+  namespace: chess-engine-api
 spec:
   ingressClassName: ngrok
   rules:
@@ -13,6 +13,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: chess-bot
+            name: chess-engine-api
             port:
               number: 8080

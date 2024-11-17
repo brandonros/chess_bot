@@ -40,8 +40,8 @@ portForwards:
 
 # mounts
 mounts:
-- location: "/Users/brandon/Desktop/rust/chess_bot"
-  mountPoint: "/mnt/chess_bot"
+- location: "/Users/brandon/Desktop/rust/chess_engine_api"
+  mountPoint: "/mnt/chess_engine_api"
   writable: true
 
 # containerd is managed by k3s, not by Lima, so the values are set to false here.

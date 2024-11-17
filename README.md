@@ -1,6 +1,6 @@
-# chess_bot
+# chess_engine_api
 
-Rust JSON HTTP API over chess move scoring engine
+Rust JSON API over chess move scoring engine
 
 ## Technologies used
 
@@ -14,6 +14,17 @@ Rust JSON HTTP API over chess move scoring engine
 - Helm (deployment package manager / YAML templating engine)
 - smol (Rust async runtime)
 - rustic (chess engine)
+
+## TODO:
+
+* backstage - service catalog
+* kong - api gateway
+* nats - messaging queue
+* redis - caching
+* postgres - database
+* unleash - feature flags
+* temporal - workflow engine
+* minio - object storage
 
 ## How to use
 

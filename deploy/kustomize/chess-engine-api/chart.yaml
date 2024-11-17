@@ -1,18 +1,18 @@
 apiVersion: helm.cattle.io/v1
 kind: HelmChart
 metadata:
-  name: chess-bot
+  name: chess-engine-api
   namespace: kube-system
 spec:
   repo: https://raw.githubusercontent.com/brandonros/hull-wrapper/master/
   chart: hull-wrapper
-  targetNamespace: chess-bot
+  targetNamespace: chess-engine-api
   version: 0.2.0
   valuesContent: |-
     hull:
       config:
         general:
-          nameOverride: chess-bot
+          nameOverride: chess-engine-api
           rbac: false
           noObjectNamePrefixes: true
       objects:
@@ -20,7 +20,7 @@ spec:
           default:
             enabled: false
         deployment:
-          chess-bot:
+          chess-engine-api:
             replicas: 2
             annotations:
               linkerd.io/inject: enabled
@@ -35,7 +35,7 @@ spec:
                       memory: 1024Mi
                       cpu: 1000m
                   image:
-                    repository: docker-registry.debian-k3s/chess-bot
+                    repository: docker-registry.debian-k3s/chess-engine-api
                     tag: latest
                   env:
                     RUST_LOG:
@@ -44,7 +44,7 @@ spec:
                     http:
                       containerPort: 8080
         service:
-          chess-bot:
+          chess-engine-api:
             type: ClusterIP
             ports:
               http:

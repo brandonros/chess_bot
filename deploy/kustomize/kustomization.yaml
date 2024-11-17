@@ -26,4 +26,6 @@ resources:
 
   # ngrok ingress
   - ngrok
-  - chess-bot
+
+  # chess engine api
+  - chess-engine-api

@@ -4,4 +4,4 @@ deploy/kustomize/cert-manager/certs/*
 deploy/kustomize/ngrok/chart.yaml
 deploy/kustomize/coredns/config.yaml
 deploy/kustomize/cicd/pvc.yaml
-deploy/kustomize/chess-bot/ngrok-ingress.yaml
+deploy/kustomize/chess-engine-api/ngrok-ingress.yaml
