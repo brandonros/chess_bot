@@ -9,9 +9,13 @@ spec:
   targetNamespace: traefik
   version: 33.0.0
   valuesContent: |-
+    podSecurityContext:
+      runAsGroup: 65532
+      runAsNonRoot: true
+      runAsUser: 65532
     deployment:
-      podAnnotations:
-        linkerd.io/inject: enabled
+      podLabels:
+        kuma.io/sidecar-injection: enabled
     logs:
       general:
         level: TRACE

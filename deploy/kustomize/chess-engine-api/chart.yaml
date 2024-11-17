@@ -22,8 +22,8 @@ spec:
         deployment:
           chess-engine-api:
             replicas: 2
-            annotations:
-              linkerd.io/inject: enabled
+            labels:
+              kuma.io/sidecar-injection: enabled
             pod:
               containers:
                 main:

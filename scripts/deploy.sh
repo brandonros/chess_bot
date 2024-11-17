@@ -15,7 +15,7 @@ then
 
     # append exposed external services from ingress to /etc/hosts if not already present
     echo "adding to /etc/hosts"
-    HOSTS_ENTRY="127.0.0.1 chess-engine-api.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s linkerd-viz.debian-k3s"
+    HOSTS_ENTRY="127.0.0.1 chess-engine-api.debian-k3s grafana.debian-k3s docker-registry.debian-k3s tempo.debian-k3s prometheus.debian-k3s kong-mesh.debian-k3s"
     if ! grep -qF "$HOSTS_ENTRY" /etc/hosts; then
         echo "$HOSTS_ENTRY" | sudo tee -a /etc/hosts
     fi
@@ -38,17 +38,6 @@ envsubst < ./deploy/kustomize/ngrok/chart-template.yaml > ./deploy/kustomize/ngr
 # compile ngrok-ingress template
 export NGROK_HOST=${NGROK_HOST}
 envsubst < ./deploy/kustomize/chess-engine-api/ngrok-ingress-template.yaml > ./deploy/kustomize/chess-engine-api/ngrok-ingress.yaml
-
-# workaround traefik needing v1.1.1 gateway-api and linkerd needing v0.8.1 gateway-api crds
-if ! kubectl get crd gatewayclasses.gateway.networking.k8s.io -o json | jq -e '.status.storedVersions | contains(["v1beta1"])' >/dev/null
-then
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v0.8.1/experimental-install.yaml
-    kubectl wait --for condition=established --timeout=60s crd/httproutes.gateway.networking.k8s.io
-    kubectl wait --for=condition=available --timeout=60s deployment/gateway-api-admission-server -n gateway-system
-
-    kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.1/experimental-install.yaml
-    kubectl wait --for condition=established --timeout=60s crd/backendlbpolicies.gateway.networking.k8s.io
-fi
 
 # deploy
 kubectl apply -k ./deploy/kustomize

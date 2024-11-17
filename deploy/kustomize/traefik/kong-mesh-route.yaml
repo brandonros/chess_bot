@@ -1,8 +1,8 @@
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: ReferenceGrant
 metadata:
-  name: linkerd-viz-reference-grant
-  namespace: linkerd
+  name: kong-mesh-reference-grant
+  namespace: kong-mesh-system
 spec:
   from:
   - group: gateway.networking.k8s.io
@@ -11,12 +11,12 @@ spec:
   to:
   - group: ""
     kind: Service
-    name: web
+    name: kong-mesh-control-plane
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: linkerd-viz-httproute
+  name: kong-mesh-httproute
   namespace: traefik
 spec:
   parentRefs:
@@ -25,15 +25,15 @@ spec:
     kind: Gateway
     sectionName: websecure
   hostnames:
-  - linkerd-viz.debian-k3s
+  - kong-mesh.debian-k3s
   rules:
   - matches:
     - path:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: web
-      namespace: linkerd
-      port: 8084
+    - name: kong-mesh-control-plane
+      namespace: kong-mesh-system
+      port: 5681
       kind: Service
       weight: 100

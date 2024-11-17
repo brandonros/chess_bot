@@ -1,0 +1,17 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: kong-mesh
+  namespace: kong-mesh-system
+spec:
+  repo: https://kong.github.io/kong-mesh-charts
+  chart: kong-mesh
+  targetNamespace: kong-mesh-system
+  valuesContent: |-
+    kuma:
+      cni:
+        enabled: true
+        chained: true
+        netDir: /var/lib/rancher/k3s/agent/etc/cni/net.d
+        binDir: /bin
+        confName: 10-flannel.conflist
