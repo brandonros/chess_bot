@@ -18,23 +18,17 @@ Rust JSON HTTP API over chess move scoring engine
 ## How to use
 
 ```shell
-# dependencies
+# install dependencies
 brew install kubectl lima helm
 
 # configure kubectl
 export KUBECONFIG="/Users/brandon/.lima/debian-k3s/copied-from-guest/kubeconfig.yaml"
 
-# create VM
-./scripts/create-vm.sh
-
-# deploy infrastructure
-./scripts/deploy-infrastructure.sh
+# create VM + deploy infrastructure
+./scripts/deploy.sh
 
 # build application
 ./scripts/build-application.sh
-
-# deploy application
-./scripts/deploy-application.sh
 
 # get best move
 curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.debian-k3s/move/best -d '{
@@ -42,4 +36,7 @@ curl --verbose -X POST -H 'Content-Type: application/json' https://chess-bot.deb
   "depth": 6,
   "fen": "rnbqkbnr/pp1pppp1/8/2p4p/4P3/2P5/PP1P1PPP/RNBQKBNR w KQkq h6 0 3"
 }'
+
+# cleanup
+./scripts/cleanup.sh
 ```

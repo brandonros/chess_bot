@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: kaniko-build-${TIMESTAMP}
+  name: ${JOB_NAME}
   namespace: cicd
 spec:
   backoffLimit: 0
@@ -12,8 +12,8 @@ spec:
       - name: kaniko
         image: gcr.io/kaniko-project/executor:latest
         args:
-          - "--dockerfile=Dockerfile"
-          - "--context=/workspace"
+          - "--dockerfile=${DOCKERFILE}"
+          - "--context=${CONTEXT}"
           - "--destination=${IMAGE_DESTINATION}"
         volumeMounts:
           - name: pvc-volume
