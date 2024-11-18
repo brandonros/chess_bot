@@ -36,3 +36,7 @@ Returns the best chess move for a given position according to the specified engi
   "best_move": "e4e5"
 }
 ```
+
+## Dependencies
+
+- Chess engine: [Rustic](https://github.com/mvanthoor/rustic)
