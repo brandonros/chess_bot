@@ -12,7 +12,7 @@ log = "0.4.22"
 # error handling
 simple_error = { git = "https://github.com/brandonros/simple_error.git" }
 # http server
-http_server = { git = "https://github.com/brandonros/http_server.git", rev = "46472331a0eb1d01e529fc6881894d811e752d36" }
+http_server = { git = "https://github.com/brandonros/http_server.git", rev = "43fda48050756c6ee73d1de2b6ffaea4d1eba522" }
 # http + url
 http = "1.1.0"
 # json
