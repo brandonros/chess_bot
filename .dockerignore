@@ -4,6 +4,4 @@ Dockerfile
 .git
 .gitignore
 .DS_Store
-deploy
-scripts
 README.md
