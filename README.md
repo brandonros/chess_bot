@@ -37,6 +37,6 @@ Returns the best chess move for a given position according to the specified engi
 }
 ```
 
-## Dependencies
+## Credits
 
-- Chess engine: [Rustic](https://github.com/mvanthoor/rustic)
+- Chess analysis powered by [Rustic](https://github.com/mvanthoor/rustic)
