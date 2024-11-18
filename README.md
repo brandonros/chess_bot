@@ -14,17 +14,18 @@ Rust JSON API over chess move scoring engine
 - Helm (deployment package manager / YAML templating engine)
 - smol (Rust async runtime)
 - rustic (chess engine)
-- ngrok (local-to-public endpoint mapper)
+- ngrok-operator (local-to-public endpoint mapper)
+- backstage - service catalog
+- redis - caching
+- postgres - database
+- temporal - workflow engine
+- windmill - workflow engine
 
-## TODO:
+## Technologies to add
 
-* backstage - service catalog
-* nats - messaging queue
-* redis - caching
-* postgres - database
-* unleash - feature flags
-* temporal - workflow engine
-* minio - object storage
+- nats - messaging queue
+- unleash - feature flags
+- minio - object storage
 
 ## How to use
 

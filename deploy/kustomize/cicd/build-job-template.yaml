@@ -13,11 +13,11 @@ spec:
         image: gcr.io/kaniko-project/executor:latest
         args:
           - "--dockerfile=${DOCKERFILE}"
-          - "--context=${CONTEXT}"
+          - "--context=${PVC_MOUNT_PATH}"
           - "--destination=${IMAGE_DESTINATION}"
         volumeMounts:
           - name: pvc-volume
-            mountPath: /workspace
+            mountPath: ${PVC_MOUNT_PATH}
       restartPolicy: Never
       volumes:
         - name: pvc-volume

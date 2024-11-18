@@ -6,7 +6,7 @@ metadata:
 spec:
   repo: https://charts.ngrok.com
   chart: ngrok-operator
-  targetNamespace: ngrok
+  targetNamespace: ngrok-operator
   version: 0.16.0-rc.2
   valuesContent: |-
     credentials:

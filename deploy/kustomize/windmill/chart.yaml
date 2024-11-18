@@ -1,0 +1,17 @@
+apiVersion: helm.cattle.io/v1
+kind: HelmChart
+metadata:
+  name: windmill
+  namespace: kube-system
+spec:
+  repo: https://windmill-labs.github.io/windmill-helm-charts/
+  chart: windmill
+  targetNamespace: windmill
+  valuesContent: |-
+    windmill:
+      appReplicas: 1
+      workerReplicas: 1
+      lspReplicas: 1
+      databaseUrl: postgres://postgres:postgres123@postgresql.postgresql.svc/windmill?sslmode=disable
+    postgresql:
+      enabled: false

@@ -33,7 +33,7 @@ envsubst < ./deploy/kustomize/cicd/pvc-template.yaml > ./deploy/kustomize/cicd/p
 # compile ngrok-operator template
 export NGROK_API_KEY=${NGROK_API_KEY}
 export NGROK_AUTH_TOKEN=${NGROK_AUTH_TOKEN}
-envsubst < ./deploy/kustomize/ngrok/chart-template.yaml > ./deploy/kustomize/ngrok/chart.yaml
+envsubst < ./deploy/kustomize/ngrok-operator/chart-template.yaml > ./deploy/kustomize/ngrok-operator/chart.yaml
 
 # compile ngrok-ingress template
 export NGROK_HOST=${NGROK_HOST}
@@ -68,9 +68,10 @@ if ! curl -s https://docker-registry.debian-k3s/v2/_catalog | jq -e '.repositori
     export TIMESTAMP=$(date +%s)
     export JOB_NAME="kaniko-build-${TIMESTAMP}"
     export IMAGE_DESTINATION="docker-registry.docker-registry.svc.cluster.local:5000/chess-engine-api:latest"
-    export PVC_NAME="local-path-pvc"
-    export DOCKERFILE="./Dockerfile"
-    export CONTEXT="/workspace"
+    export PVC_NAME="cicd-pvc"
+    export DOCKERFILE="Dockerfile"
+    export PVC_MOUNT_PATH="/workspace"
+    envsubst < ./deploy/kustomize/cicd/build-job-template.yaml
     envsubst < ./deploy/kustomize/cicd/build-job-template.yaml | kubectl apply -f -
 
     # wait for job to complete
