@@ -71,7 +71,6 @@ if ! curl -s https://docker-registry.debian-k3s/v2/_catalog | jq -e '.repositori
     export PVC_NAME="cicd-pvc"
     export DOCKERFILE="Dockerfile"
     export PVC_MOUNT_PATH="/workspace"
-    envsubst < ./deploy/kustomize/cicd/build-job-template.yaml
     envsubst < ./deploy/kustomize/cicd/build-job-template.yaml | kubectl apply -f -
 
     # wait for job to complete

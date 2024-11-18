@@ -23,6 +23,7 @@ spec:
         enabled: false
       kubernetesGateway:
         enabled: true
+        experimentalChannel: true
         gateway:
           namespacePolicy: All
           listeners:

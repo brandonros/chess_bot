@@ -11,9 +11,12 @@ resources:
   - docker-registry
   - cicd
   - ngrok-operator
-  - chess-engine-api
-  - backstage
   - redis
   - postgresql
+  - minio
+  - backstage
+  - mlflow
   - windmill
   - temporal
+  - chess-engine-api
+  
