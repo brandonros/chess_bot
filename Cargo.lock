@@ -235,6 +235,7 @@ name = "chess_engine_api"
 version = "0.1.0"
 dependencies = [
  "crossbeam-channel",
+ "dotenvy",
  "env_logger",
  "http",
  "http_server",
@@ -301,6 +302,12 @@ name = "crossbeam-utils"
 version = "0.8.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "22ec99545bb0ed0ea7bb9b8e1e9122ea386ff8a48c0922e43f36d45ab09e0e80"
+
+[[package]]
+name = "dotenvy"
+version = "0.15.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
 
 [[package]]
 name = "env_filter"
@@ -424,7 +431,7 @@ dependencies = [
 [[package]]
 name = "http_server"
 version = "0.1.0"
-source = "git+https://github.com/brandonros/http_server.git?rev=7917abf069d98c3326ee95fca2ba242cdc2e7ca3#7917abf069d98c3326ee95fca2ba242cdc2e7ca3"
+source = "git+https://github.com/brandonros/http_server.git?rev=46472331a0eb1d01e529fc6881894d811e752d36#46472331a0eb1d01e529fc6881894d811e752d36"
 dependencies = [
  "async-executor",
  "async-io",
