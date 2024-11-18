@@ -8,7 +8,7 @@ images:
   digest: "sha256:42911131556b610895360e3d28a2c3ec41c0bad85e8df9fc9374996509d1f256" # Mon, 11 Nov 2024 14:47:23 GMT
 
 # memory
-memory: "8GiB"
+memory: "10GiB"
 
 # cpus
 cpus: 8
